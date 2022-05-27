@@ -221,7 +221,7 @@ void can_Task(void const * argument)
   {
 		Offline_task();  			
 	  //CAN1_send();
-		CAN2_send();
+		//CAN2_send();
 		vTaskDelayUntil(&PreviousWakeTime1,TimeIncrement);
   }
   /* USER CODE END can_Task */
