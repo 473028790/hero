@@ -217,10 +217,10 @@ void RemoteDataProcess(uint8_t *pData)
 }
 void RC_restart(uint16_t dma_buf_num)
 {
-	
+	/*
 	__set_FAULTMASK(1);
 	NVIC_SystemReset();
-	
+	*/
 }
 
 
@@ -488,7 +488,8 @@ void ReadRc_dial(void)
 				dial_number2++;
 				if(dial_number2==1)
 				{
-					get_back_offset(&dial_data);
+					//get_back_offset(&dial_data);
+					dial_data.angle_set=(360*(68550))/8191;
 				}
 				if(dial_number2>3) dial_number2=3;
 			}

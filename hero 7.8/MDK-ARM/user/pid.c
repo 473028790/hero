@@ -367,6 +367,7 @@ void get_back_offset(struct dial_data *ptr)
 	ptr->angle_first=ptr->angle;
 	ptr->angle_set=-8191+ptr->angle_first;
    ptr->angle_set=(360*(ptr->angle_set))/8191;
+
 }
 
 
@@ -390,6 +391,8 @@ void dial_PID()             //拨盘PID运算
 
          if(fabs(dial_outer_pid.ActualSpeed-dial_outer_pid.target)<10)     //确定结束后，运行结束程序
          {
+            if(STOP==2)
+            {
             dial_sign=0;
             dial_back_sign=0;
             dial_number=0;
@@ -399,7 +402,7 @@ void dial_PID()             //拨盘PID运算
 				dial_data.total_angle=0;
 				dial_data.angle_first=0;
 				dial_data.angle_set=0;
-
+            }
          }
 
    }

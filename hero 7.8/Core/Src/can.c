@@ -394,7 +394,7 @@ void CAN1_0x333_TX(int16_t motor1)
 {
 	CAN_TxHeaderTypeDef tx;
 
-	tx.StdId = 0x333;
+	tx.StdId = 0x666;
 	tx.RTR = CAN_RTR_DATA;
 	tx.IDE = CAN_ID_STD;
 	tx.DLC = 8;
