@@ -26,8 +26,8 @@ void (*dma_M0_rx_callback)(void);
 void (*dma_M1_rx_callback)(void);
 void KEY_chassis_max(void);
 
-uint8_t STOP;//s1,1--control   2--KEY
-uint8_t MODE;//s2
+uint8_t STOP=3;//s1,1--control   2--KEY
+uint8_t MODE=3;//s2
 int16_t L_X;
 int16_t L_Y;
 int16_t R_Y;
@@ -492,6 +492,7 @@ void ReadRc_Gimbal(void)
 int dial_number=0;
 int dial_number1=0;
 int dial_number2=0;
+int dial_sign1=0;
 int dial_sign=0;
 int dial_back_sign=0;
 int shoot_number=0;
@@ -500,9 +501,15 @@ int infra_red_MODE=0;
 void ReadRc_dial(void)
 {
 	infra_red_GPIO=HAL_GPIO_ReadPin(GPIOC,GPIO_PIN_7);
-	dial_mode=dial_mode_choose;//??????
+	if(KEY_Date.Ctrl==1)
+	{
+		 dial_mode=infantry;
+	}
+	else if(KEY_Date.Shift==1)
+	{
+		 dial_mode=hero;
+	}
 
-/*
 	if(dial_mode==hero)
 	{
 		if(STOP==1)
@@ -538,14 +545,14 @@ void ReadRc_dial(void)
 
 		if(STOP==2)
 		{
-			shoot_number=determine_shoot();
+			//shoot_number=determine_shoot();
 			//if(RC_CtrlData.mouse.press_l==1 && shoot_number!=0)
 			
 			if(RC_CtrlData.mouse.press_l==1)
 			{
-				dial_sign=1;
+				dial_sign1=1;
 			}
-			if(dial_sign==1)
+			if(dial_sign1==1)
 			{
 				dial_number1++;
 				if(dial_number1==1)
@@ -557,33 +564,14 @@ void ReadRc_dial(void)
 				get_total_angle(&dial_data);
 
 			}
-
-
-
-
-
-			if(RC_CtrlData.mouse.press_r==1)
-			{
-				dial_back_sign=1;
-			}
-			if(dial_back_sign==1)
-			{
-				dial_number2++;
-				if(dial_number2==1)
-				{
-					get_back_offset(&dial_data);
-				}
-				if(dial_number2>3) dial_number2=3;
-
-				get_total_angle(&dial_data);
-
-			}
-
+}
 
 		}
-*/
+
 	if(dial_mode==infantry)
 	{
+		if(STOP==1)
+		{
       if(MODE==1)
 			{
 				dial_red++;
@@ -629,31 +617,68 @@ void ReadRc_dial(void)
 				dial_motor.target_speed=0;
 				infra_red_MODE=0;
 			}
-		/*
-      if(MODE==1)
-      { 
-				if(infra_red_GPIO==1)
+		}
+		if(STOP==2)
+		{
+			shoot_number=determine_shoot();
+			//if(RC_CtrlData.mouse.press_l==1 && shoot_number!=0)
+			
+			if(RC_CtrlData.mouse.press_l==1)
+			{
+				dial_sign=1;
+			}
+			if(dial_sign==1)
+			{
+				dial_red++;
+				if(dial_red==1)
 				{
-					dial_motor.target_speed=2000;
+					infra_red_MODE=1;
 				}
-				if(infra_red_GPIO==0)
+				if(infra_red_MODE==1)
 				{
-					dial_motor.target_speed=0;
+					if(infra_red_GPIO==0)
+					{
+						dial_motor.target_speed=2000;
+						if(infra_red_GPIO==1)
+						{
+							dial_motor.target_speed=0;
+							
+							infra_red_MODE=2;
+						}
+					}
+					else if(infra_red_GPIO==1)
+					{
+						dial_motor.target_speed=0;
+						infra_red_MODE=2;
+					}
 				}
-      }
-	  if(MODE==3)
-      {
-				if(infra_red_GPIO==0)
+				
+				if(infra_red_MODE==2)
 				{
-					dial_motor.target_speed=2000;
+					if(infra_red_GPIO==1)
+					{
+						dial_motor.target_speed=2000;
+					}
+					else if(infra_red_GPIO==0)
+					{
+						dial_motor.target_speed=0;
+						infra_red_MODE=0;
+						
+					}
 				}
-				if(infra_red_GPIO==1)
-				{
-					dial_motor.target_speed=0;
-				}
-      }
-			*/
+				
+
+			}
+			if(RC_CtrlData.mouse.press_l==1)
+			{
+				dial_red=0;
+				dial_motor.target_speed=0;
+				infra_red_MODE=0;
+			}
+
+		}
 	}
+	
 
 }
 void KEY_chassis_max()
@@ -671,4 +696,3 @@ void KEY_chassis_max()
 			}
 	}
 }
-

@@ -2,11 +2,10 @@
 #define _PID_H_
 #include "can.h"
 
-#define Friction -8000
+#define Friction -3000
 #define hero 1
 #define infantry 2
 
-#define dial_mode_choose 2
 
 void PID_init(void);
 void Chassis_PID(void);

@@ -29,6 +29,7 @@
 
 #define DETECT_TASK_INIT_TIME 57
 #define DETECT_CONTROL_TIME 10
+#define Control_detection_TIME 3000
 
 //初始化错误列表
 static void DetectInit(uint32_t time);
@@ -38,7 +39,6 @@ error_t errorList[errorListLength + 1];
 #if INCLUDE_uxTaskGetStackHighWaterMark
 uint32_t DetectTaskStack;
 #endif
-int cnt9=0;
 //掉线判断任务
 void DetectTask(void)
 {
@@ -104,7 +104,6 @@ void DetectTask(void)
                 errorList[i].errorExist = 1;
                 if (errorList[i].solveLostFun != NULL)
                 {
-                    cnt9++;
                     errorList[i].solveLostFun();
                 }
             }
@@ -178,7 +177,7 @@ static void DetectInit(uint32_t time)
             {30, 40, 15}, //SBUS
             {2, 3, 14},   //yaw
             {2, 3, 13},   //pitch
-            {10, 10, 12}, //trigger
+            {3000, 3000, 12}, //Control_detection
             {10, 10, 11}, //motor1
             {10, 10, 10}, //motor2
             {10, 10, 9},  //motor3

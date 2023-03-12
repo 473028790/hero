@@ -289,8 +289,8 @@ void Detect_Task(void const * argument)
   /* Infinite loop */
   for(;;)
   {
-    //DetectTask();
-	  //vTaskDelayUntil(&PreviousWakeTime1,TimeIncrement);
+    DetectTask();
+	  vTaskDelayUntil(&PreviousWakeTime1,TimeIncrement);
     vTaskDelay(DETECT_TASK_INIT_TIME);
   }
   /* USER CODE END Detect_Task */
