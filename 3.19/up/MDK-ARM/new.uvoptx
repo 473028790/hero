@@ -383,52 +383,27 @@
         <Ww>
           <count>45</count>
           <WinNumber>1</WinNumber>
-          <ItemText>\\new\../Core/Src/can.c\gimbal_yaw_motor</ItemText>
+          <ItemText>CAN1_RX</ItemText>
         </Ww>
         <Ww>
           <count>46</count>
           <WinNumber>1</WinNumber>
-          <ItemText>chassis_cnt,0x0A</ItemText>
+          <ItemText>supercap</ItemText>
         </Ww>
         <Ww>
           <count>47</count>
           <WinNumber>1</WinNumber>
-          <ItemText>cnt100</ItemText>
+          <ItemText>\\new\../Core/Src/can.c\gimbal_yaw_motor</ItemText>
         </Ww>
         <Ww>
           <count>48</count>
           <WinNumber>1</WinNumber>
-          <ItemText>dial_red,0x0A</ItemText>
+          <ItemText>CAN1_RX</ItemText>
         </Ww>
         <Ww>
           <count>49</count>
           <WinNumber>1</WinNumber>
-          <ItemText>MODE,0x0A</ItemText>
-        </Ww>
-        <Ww>
-          <count>50</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>RC_data</ItemText>
-        </Ww>
-        <Ww>
-          <count>51</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>CAN2_Rx</ItemText>
-        </Ww>
-        <Ww>
-          <count>52</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>CAN2_Rx</ItemText>
-        </Ww>
-        <Ww>
-          <count>53</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>\\new\../Core/Src/can.c\dial_data</ItemText>
-        </Ww>
-        <Ww>
-          <count>54</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>cnt500,0x0A</ItemText>
+          <ItemText>red_GPIO_sign,0x0A</ItemText>
         </Ww>
       </WatchWindow1>
       <Tracepoint>
