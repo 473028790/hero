@@ -261,7 +261,7 @@ void vofa_Task(void const * argument)
   for(;;)
   {
     //vision_Send();
-		report_SendData(Friction_motor[1].target_speed,Friction_motor[1].ActualSpeed,0,0,0);
+		report_SendData(Friction_motor[1].target_speed,Friction_motor[1].ActualSpeed,Friction_motor[0].target_speed,Friction_motor[0].ActualSpeed,0);
 	  vTaskDelayUntil(&PreviousWakeTime1,TimeIncrement);
   }
   /* USER CODE END vofa_Task */
@@ -335,7 +335,7 @@ void super_cap_task(void const * argument)
   /* Infinite loop */
   for(;;)
   {
-		//CAN1_0x333_TX(48);
+		CAN1_0x333_TX(48);
 		//CAN2_0x300_TX(66);
 	  vTaskDelayUntil(&PreviousWakeTime1,TimeIncrement);
   }

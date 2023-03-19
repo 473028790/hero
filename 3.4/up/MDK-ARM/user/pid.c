@@ -27,9 +27,27 @@ void Incremental_PID(struct motor *motor);
 void location_PID(struct motor *motor);
 void Gimbal_inner_PID(struct gimbal_inner_pid *motor);
 void Gimbal_outer_PID(struct gimbal_outer_pid *motor);
+/*
+typedef struct
+{
+	float rin;
+	float lastRin;
+	float perrRin;
+}FFC;
 
-
-
+float FeedforwardController(FFC *vFFC)
+{
+	float result;
+	
+	
+	result=a*(vFFC->rin-vFFC->lastRin)+b*(vFFC->rin-2*vFFC->lastRin+vFFC->lastRin+vFFC->perrRin);
+	
+	vFFC->perrRin=vFFC->lastRin;
+	vFFC->lastRin=vFFC->rin;
+	
+	return result;
+}
+*/
 void PID_init()            //集合PID初始化
 { 
    wheel_pid_init();      //轮子pid初始化
@@ -286,7 +304,7 @@ void Gimbal_PID()           //云台PID运算
    Gimbal_inner_PID(&pitch_inner_pid);
 
 }
-int friction_sign=0;
+
 void Friction_PID(void)         //摩擦轮PID运算
 { 
    //测试摩擦轮用
@@ -311,17 +329,8 @@ void Friction_PID(void)         //摩擦轮PID运算
    }
    if(STOP==2)
    {
-      if(KEY_Date.Ctrl==1)
-      {
-         friction_sign=1;
-      }
-      if(friction_sign==1)
-      {
          Friction_motor[0].target_speed=-Friction;              //头文件里面改速度常量
          Friction_motor[1].target_speed=Friction;      
-      }
-
-
    }
 
    //Incremental_PID(&Friction_motor[0]);
@@ -355,11 +364,12 @@ void get_total_angle(struct dial_data *p)
 	p->last_angle = p->angle;
 }
 
+float dial_turns=1.2;
 //确定拨盘目标圈数
 void get_moto_offset(struct dial_data *ptr)
 {
 	ptr->angle_first=ptr->angle;
-	ptr->angle_set=68550-ptr->angle_first;
+	ptr->angle_set=((int)(dial_turns*(31593)))-ptr->angle_first;
    ptr->angle_set=(360*(ptr->angle_set))/8191;
 }
 
@@ -374,13 +384,14 @@ void get_back_offset(struct dial_data *ptr)
 
 
 
-int dial_mode;
+//int dial_mode=infantry;
+int dial_mode=infantry;
 extern int dial_sign;
+extern int dial_sign1;
 extern int dial_back_sign;
 void dial_PID()             //拨盘PID运算
 {
-	dial_mode=infantry;//拨盘模式选择
-	/*
+	
 	if(dial_mode==hero)
 	{
          dial_outer_pid.target=dial_data.angle_set;
@@ -405,7 +416,7 @@ void dial_PID()             //拨盘PID运算
 		{
          if(fabs(dial_outer_pid.ActualSpeed-dial_outer_pid.target)<10)     //确定结束后，运行结束程序
          {
-            dial_sign=0;
+            dial_sign1=0;
             dial_back_sign=0;
             dial_number=0;
             dial_number1=0;
@@ -418,7 +429,7 @@ void dial_PID()             //拨盘PID运算
          }
 		}
    }
-*/
+
 	if(dial_mode==infantry)
 	{
       Incremental_PID(&dial_motor);
