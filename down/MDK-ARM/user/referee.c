@@ -3,8 +3,33 @@
 #include "usart.h"
 #include "string.h"
 #include "chassis_mode.h"
-
+extern uint8_t judge_tag;
 uint16_t HP_percen = 100;
+
+
+uint8_t CliendTxBuffer[100];
+char referee_supcap[16]= {"supercapacitor:"};//超级电容剩余量
+char empty_line[20] = {"                    "};
+char super_cap1[2],super_cap2[2],percent_sign[2]={'%'},follow_mode[7]={"FOLLOW"},gyro_mode[5]={"GYRO"},aimbot_mode[12]={"AIMBOTMODE:"},
+      aimbot_status_on[3]={"ON"},aimbot_status_off[4]={"OFF"}, continuouds_shoot[18]={"CONTINUOUDS_SHOOT"},single_shoot[13]={"SINGLE_SHOOT"};
+/**************************字符串坑中坑：像百分号它只有1个，但是得设置2个内存的数组，其他的也一样，因为数组末尾默认有一个占位符 ****************************/
+extern int Chassis_mode;
+extern int Shooting_mode;
+extern uint8_t judge_tag;
+extern uint8_t Judge_Buffer[128];
+/* Private typedef -----------------------------------------------------------*/
+extern UART_HandleTypeDef huart1;
+extern UART_HandleTypeDef huart3;
+extern UART_HandleTypeDef huart6;
+extern UART_HandleTypeDef huart4;
+UI_char_t UI_char=
+{
+	.char_send_times=0,
+
+};
+Graphic_Color Cap_Color=GREEN;
+
+			
 
 frame_header_t 					shead_data;//帧头
 ext_game_robot_HP_t			HP;//血量
@@ -23,7 +48,9 @@ JUDGE_HEADER judge_header;
 #define RED   1
 uint8_t Judge_Self_ID;//当前机器人的ID
 uint16_t Judge_SelfClient_ID;//发送者机器人对应的客户端ID
-ext_SendClientData_t      ShowData;			//客户端信息
+
+
+extern uint8_t Judge_Buffer[128];
 
 static union{//联合体传输浮点数
 
@@ -174,362 +201,248 @@ void determine_ID(void)
 	}
 }
 
-/**
-  * @brief  判断当前热量剩余能否发子弹
-  * @param  int
-  * @retval 
-  * @attention  数据打包,打包完成后通过串口发送到裁判系统
-  */
- int determine_shoot(void)
- {
-	int number=0;
-	number=((My_status.shooter_id1_42mm_cooling_limit)-(power.shooter_id1_42mm_cooling_heat))/100;
-	return number;
- }
 
 
-#define send_max_len     113
-uint8_t CliendTxBuffer[send_max_len];
- 
+
 
 int cap_now;
 
-void JUDGE_Show_Data(void)
-{
-	static uint8_t datalength,i;
-	
-	determine_ID();//判断发送者ID和其对应的客户端ID
-	
-	ShowData.txFrameHeader.SOF = 0xA5;
-	ShowData.txFrameHeader.DataLength = sizeof(ext_student_interactive_header_data_t) + 7*(sizeof(graphic_data_struct_t));
-	ShowData.txFrameHeader.Seq = 0;
-	memcpy(CliendTxBuffer, &ShowData.txFrameHeader, sizeof(xFrameHeader));//写入帧头数据
-	ref_append_crc8(CliendTxBuffer, sizeof(xFrameHeader));//写入帧头CRC8校验码
-	
-	ShowData.CmdID = 0x0301;
-	
-	ShowData.dataFrameHeader.data_cmd_id = 0x0104;//发给客户端的cmd,官方固定
-	//ID已经是自动读取的了
-	ShowData.dataFrameHeader.send_ID 	 = Judge_Self_ID;//发送者的ID
-	ShowData.dataFrameHeader.receiver_ID = Judge_SelfClient_ID;//客户端的ID，只能为发送者机器人对应的客户端
-	
-	/*- 自定义内容 -*/
-	//模式圆形
-	//小陀螺
-	ShowData.clientData[1].graphic_name[0] = 0;
-	ShowData.clientData[1].graphic_name[1] = 0;
-	ShowData.clientData[1].graphic_name[2] = 2;
 
-	ShowData.clientData[1].operate_tpye=1		  ;//图形操作
-	ShowData.clientData[1].graphic_tpye=2		  ;//图形类型
-	ShowData.clientData[1].layer=0	  	  		  ;//图层数
-	ShowData.clientData[1].color=4	  	  		  ;//颜色
-	ShowData.clientData[1].start_angle=60		  ;//起始角度
-	ShowData.clientData[1].end_angle=260 		  ;//结束角度
-	ShowData.clientData[1].width=6 	 			  ;//宽度
-	ShowData.clientData[1].start_x=223 	  ;//起点 x 坐标；
-	ShowData.clientData[1].start_y=690 	  ;//起点 y 坐标；
-	ShowData.clientData[1].radius=28     		  ;//字体大小或者半径；
-	ShowData.clientData[1].end_x=1354 	  ;//终点 x 坐标；
-	ShowData.clientData[1].end_y=610 	  ;//终点 y 坐标；
-
-	/*- 自定义内容 -*/
-	//模式圆形
-	//底盘跟随
-	ShowData.clientData[2].graphic_name[0] = 0;
-	ShowData.clientData[2].graphic_name[1] = 0;
-	ShowData.clientData[2].graphic_name[2] = 3;
-
-	ShowData.clientData[2].operate_tpye=1		  ;//图形操作
-	ShowData.clientData[2].graphic_tpye=2		  ;//图形类型
-	ShowData.clientData[2].layer=0	  	  		  ;//图层数
-	ShowData.clientData[2].color=4	  	  		  ;//颜色
-	ShowData.clientData[2].start_angle=60		  ;//起始角度
-	ShowData.clientData[2].end_angle=260 		  ;//结束角度
-	ShowData.clientData[2].width=6 	 			  ;//宽度
-	ShowData.clientData[2].start_x=223 	 	  ;//起点 x 坐标；
-	ShowData.clientData[2].start_y=770 	 		  ;//起点 y 坐标；
-	ShowData.clientData[2].radius=28     		  ;//字体大小或者半径；
-	ShowData.clientData[2].end_x=1466 	  		  ;//终点 x 坐标；
-	ShowData.clientData[2].end_y=610 			  ;//终点 y 坐标；
-
-
-	/*- 自定义内容 -*/
-	
-	//超级电容电量条
-	
-	ShowData.clientData[4].graphic_name[0] = 0;
-	ShowData.clientData[4].graphic_name[1] = 0;
-	ShowData.clientData[4].graphic_name[2] = 5;
-
-	ShowData.clientData[4].operate_tpye=1		  ;//图形操作
-	ShowData.clientData[4].graphic_tpye=0		  ;//图形类型
-	ShowData.clientData[4].layer=1	  	  		  ;//图层数
-	ShowData.clientData[4].color=2	  	  		  ;//颜色
-	ShowData.clientData[4].start_angle=empty	  ;//起始角度
-	ShowData.clientData[4].end_angle=empty 		  ;//结束角度
-	ShowData.clientData[4].width=24 	 		  ;//宽度
-	ShowData.clientData[4].start_x=1513 	 	  ;//起点 x 坐标；
-	ShowData.clientData[4].start_y=625 	 		  ;//起点 y 坐标；
-	ShowData.clientData[4].radius=1512     	  ;//字体大小或者半径；
-	ShowData.clientData[4].end_x=1847 	  		  ;//终点 x 坐标；
-	ShowData.clientData[4].end_y=625 			  ;//终点 y 坐标；
-
-
-
-	/*- 自定义内容 -*/
-	//模式圆形
-	if(chassis_mode==1)
-	{
-	ShowData.clientData[5].graphic_name[0] = 0;
-	ShowData.clientData[5].graphic_name[1] = 0;
-	ShowData.clientData[5].graphic_name[2] = 2;
-
-	ShowData.clientData[5].operate_tpye=2		  ;//图形操作
-	ShowData.clientData[5].graphic_tpye=2		  ;//图形类型
-	ShowData.clientData[5].layer=0	  	  		  ;//图层数
-	ShowData.clientData[5].color=2	  	  		  ;//颜色
-	ShowData.clientData[5].start_angle=60		  ;//起始角度
-	ShowData.clientData[5].end_angle=260 		  ;//结束角度
-	ShowData.clientData[5].width=6 	 			  ;//宽度
-	ShowData.clientData[5].start_x=223 	  ;//起点 x 坐标；
-	ShowData.clientData[5].start_y=690 	  ;//起点 y 坐标；
-	ShowData.clientData[5].radius=28     		  ;//字体大小或者半径；
-	ShowData.clientData[5].end_x=1354 	  ;//终点 x 坐标；
-	ShowData.clientData[5].end_y=610 	  ;//终点 y 坐标；
-	}
-
-	if(chassis_mode==0)
-	{
-	ShowData.clientData[6].graphic_name[0] = 0;
-	ShowData.clientData[6].graphic_name[1] = 0;
-	ShowData.clientData[6].graphic_name[2] = 3;
-
-	ShowData.clientData[6].operate_tpye=2		  ;//图形操作
-	ShowData.clientData[6].graphic_tpye=2		  ;//图形类型
-	ShowData.clientData[6].layer=0	  	  		  ;//图层数
-	ShowData.clientData[6].color=2	  	  		  ;//颜色
-	ShowData.clientData[6].start_angle=60		  ;//起始角度
-	ShowData.clientData[6].end_angle=260 		  ;//结束角度
-	ShowData.clientData[6].width=6 	 			  ;//宽度
-	ShowData.clientData[6].start_x=223 	  ;//起点 x 坐标；
-	ShowData.clientData[6].start_y=770 	  ;//起点 y 坐标；
-	ShowData.clientData[6].radius=28     		  ;//字体大小或者半径；
-	ShowData.clientData[6].end_x=1354 	  ;//终点 x 坐标；
-	ShowData.clientData[6].end_y=610 	  ;//终点 y 坐标；
-	}
-
-	//打包写入数据段
-	memcpy(	
-			CliendTxBuffer + 5, 
-			(uint8_t*)&ShowData.CmdID, 
-			(sizeof(ShowData.CmdID)+ sizeof(ShowData.dataFrameHeader)+ 7*(sizeof(ShowData.clientData[0])))
-		  );			
-
-	ref_append_crc16(CliendTxBuffer,sizeof(ShowData));//写入数据段CRC16校验码	
-
-	datalength = sizeof(ShowData); 
-	for(i = 0;i < datalength;i++)
-	{
-		HAL_UART_Transmit(&huart4,(uint8_t *)&CliendTxBuffer[i],200,0x10);
-		while(__HAL_UART_GET_FLAG(&huart4, UART_FLAG_IDLE) != RESET);
-	}	 
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-#define send_max_len     113
-uint8_t CliendTxBuffer2[send_max_len];
-
-void JUDGE_Show_init(void)
-{
-	static uint8_t datalength,i;
-	
-	determine_ID();//判断发送者ID和其对应的客户端ID
-	
-	ShowData.txFrameHeader.SOF = 0xA5;
-	ShowData.txFrameHeader.DataLength = sizeof(ext_student_interactive_header_data_t) + 7*(sizeof(graphic_data_struct_t));
-	ShowData.txFrameHeader.Seq = 0;
-	memcpy(CliendTxBuffer2, &ShowData.txFrameHeader, sizeof(xFrameHeader));//写入帧头数据
-	ref_append_crc8(CliendTxBuffer2, sizeof(xFrameHeader));//写入帧头CRC8校验码
-	
-	ShowData.CmdID = 0x0301;
-	
-	ShowData.dataFrameHeader.data_cmd_id = 0x0104;//发给客户端的cmd,官方固定
-	//ID已经是自动读取的了
-	ShowData.dataFrameHeader.send_ID 	 = Judge_Self_ID;//发送者的ID
-	ShowData.dataFrameHeader.receiver_ID = Judge_SelfClient_ID;//客户端的ID，只能为发送者机器人对应的客户端
-	
-	/*- 自定义内容 -*/
-	//射速方框
-	ShowData.clientData[0].graphic_name[0] = 0;
-	ShowData.clientData[0].graphic_name[1] = 0;
-	ShowData.clientData[0].graphic_name[2] = 1;
-
-	ShowData.clientData[0].operate_tpye=1		  ;//图形操作
-	ShowData.clientData[0].graphic_tpye=1		  ;//图形类型
-	ShowData.clientData[0].layer=0	  	  		  ;//图层数
-	ShowData.clientData[0].color=4	  	  		  ;//颜色
-	ShowData.clientData[0].start_angle=60		  ;//起始角度
-	ShowData.clientData[0].end_angle=260 		  ;//结束角度
-	ShowData.clientData[0].width=6 	 			  ;//宽度
-	ShowData.clientData[0].start_x=1354 	  ;//起点 x 坐标；
-	ShowData.clientData[0].start_y=480 	  ;//起点 y 坐标；
-	ShowData.clientData[0].radius=60     		  ;//字体大小或者半径；
-	ShowData.clientData[0].end_x=1466 	  ;//终点 x 坐标；
-	ShowData.clientData[0].end_y=610 	  ;//终点 y 坐标；
-
-	/*- 自定义内容 -*/
-	//超级电容电量方框
-	ShowData.clientData[3].graphic_name[0] = 0;
-	ShowData.clientData[3].graphic_name[1] = 0;
-	ShowData.clientData[3].graphic_name[2] = 4;
-
-	ShowData.clientData[3].operate_tpye=1		  ;//图形操作
-	ShowData.clientData[3].graphic_tpye=1		  ;//图形类型
-	ShowData.clientData[3].layer=0	  	  		  ;//图层数
-	ShowData.clientData[3].color=8	  	  		  ;//颜色
-	ShowData.clientData[3].start_angle=60		  ;//起始角度
-	ShowData.clientData[3].end_angle=260 		  ;//结束角度
-	ShowData.clientData[3].width=6 	 			  ;//宽度
-	ShowData.clientData[3].start_x=1510 	 	  ;//起点 x 坐标；
-	ShowData.clientData[3].start_y=640 	 		  ;//起点 y 坐标；
-	ShowData.clientData[3].radius=60     		  ;//字体大小或者半径；
-	ShowData.clientData[3].end_x=1850 	  		  ;//终点 x 坐标；
-	ShowData.clientData[3].end_y=610 			  ;//终点 y 坐标；
-
-
-	//打包写入数据段
-	memcpy(	
-			CliendTxBuffer2 + 5, 
-			(uint8_t*)&ShowData.CmdID, 
-			(sizeof(ShowData.CmdID)+ sizeof(ShowData.dataFrameHeader)+ 7*(sizeof(ShowData.clientData[0])))
-		  );			
-
-	ref_append_crc16(CliendTxBuffer2,sizeof(ShowData));//写入数据段CRC16校验码	
-
-	datalength = sizeof(ShowData); 
-	for(i = 0;i < datalength;i++)
-	{
-		HAL_UART_Transmit(&huart4,(uint8_t *)&CliendTxBuffer2[i],200,0x10);
-		while(__HAL_UART_GET_FLAG(&huart4, UART_FLAG_IDLE) != RESET);
-	}	 
-}
-
-
-
-/*********************************************/
-uint8_t CliendTxBuffer1[200];
-uint8_t TeammateTxBuffer[200];
-char first_line[30]  = {"top"};//小陀螺
-char second_line[30] = {"follow"};//底盘跟随
-char third_line[30]  = {"supercapacitor"};//超级电容剩余量,float
-char empty_line[30] = {"                            "};
-//*******************************绘字符串******************************/
+/**
+ *	@brief	字符串图层配置
+ */
 ext_charstring_data_t tx_client_char;
-uint8_t state_first_graphic=0;//0~7循环
 void Char_Graphic(ext_client_string_t* graphic,//最终要发出去的数组中的数据段内容
 									const char* name,
-									uint32_t operate_tpye,
-									
+									uint32_t operate_tpye,									
 									uint32_t layer,
 									uint32_t color,
 									uint32_t size,
 									uint32_t length,
 									uint32_t width,
 									uint32_t start_x,
-									uint32_t start_y,
-
-									
-									
+									uint32_t start_y,																	
 									const char *character)//外部放入的数组
 {
-	graphic_data_struct_t *data_struct = &graphic->grapic_data_struct;
-	for(char i=0;i<3;i++)
-	data_struct->graphic_name[i] = name[i];	//字符索引
-	data_struct->operate_tpye = operate_tpye; //图层操作
-	data_struct->graphic_tpye = 7;         //Char型
-	data_struct->layer = layer;//都在第零层
-	data_struct->color = color;//都是白色
-	data_struct->start_angle = size;
-	data_struct->end_angle = length;	
-	data_struct->width = width;
-	data_struct->start_x = start_x;
-	data_struct->start_y = start_y;	
-	
-	data_struct->radius = 0;
-	data_struct->end_x = 0;
-	data_struct->end_y = 0;
-	
-	memcpy(graphic->data,empty_line,28);
-	memcpy(graphic->data,character,length);
+	for(char i=0;i<3;i++){
+	graphic->grapic_data_struct.graphic_name[i] = name[i];	//字符索引
+	}
+	graphic->grapic_data_struct.operate_tpye = operate_tpye; 
+	graphic->grapic_data_struct.graphic_tpye = 7;         
+	graphic->grapic_data_struct.layer = layer;
+	graphic->grapic_data_struct.color = color;
+	graphic->grapic_data_struct.start_angle = size;
+	graphic->grapic_data_struct.end_angle = length;	
+	graphic->grapic_data_struct.width = width;
+	graphic->grapic_data_struct.start_x = start_x;
+	graphic->grapic_data_struct.start_y = start_y;	
+	memcpy(graphic->data,empty_line,19);
+  memcpy(graphic->data,character,length);
 }
 
-static void Draw_char()
+/**
+ *	@brief	字符串初始化
+ */
+static void Char_Init()
 {
-	if(state_first_graphic == 0)//不知道什么时候进入客户端所以要不断更新
-	{
-		Char_Graphic(&tx_client_char.clientData,"CL1",1,0,8,20,strlen(first_line),5,(70),(700),first_line);//小陀螺
-		state_first_graphic = 1;
+	if(UI_char.char_send_times==0){     /*添加 超级电容字符串*/
+	Char_Graphic(&tx_client_char.clientData,"CL1",ADD,0,YELLOW,25,strlen(referee_supcap),5,(50),(1080*9/12),referee_supcap);
+	UI_char.char_send_times=1;
 	}
-	else if(state_first_graphic == 1)
-	{
-		Char_Graphic(&tx_client_char.clientData,"CL2",1,0,8,20,strlen(second_line),5,(70),(785),second_line);//底盘跟随
-		state_first_graphic = 2;
+	else if(UI_char.char_send_times==1){/*添加 超级电容剩余量百分十位*/
+	Char_Graphic(&tx_client_char.clientData,"CL2",ADD,0,GREEN,25,strlen(super_cap1),5,(460),(1080*9/12),super_cap1);
+	UI_char.char_send_times=2;
 	}
-	else if(state_first_graphic == 2)
-	{
-		Char_Graphic(&tx_client_char.clientData,"CL3",1,0,8,20,strlen(third_line),5,(1510),(680),third_line);//超级电容
-		state_first_graphic = 0;
+	else if(UI_char.char_send_times==2){/*添加 超级电容余量百分个位*/
+	Char_Graphic(&tx_client_char.clientData,"CL3",ADD,0,GREEN,25,strlen(super_cap2),5,(485),(1080*9/12),super_cap2);
+	UI_char.char_send_times=3;
 	}
+	else if(UI_char.char_send_times==3){/*添加 百分号*/
+	Char_Graphic(&tx_client_char.clientData,"CL4",ADD,0,YELLOW,25,strlen(percent_sign),5,(510),(1080*9/12),percent_sign);
+	UI_char.char_send_times=4;
+	}
+	else if(UI_char.char_send_times==4){/*更新 超级电容剩余量百分十位*/
+	Get_supercap_();
+	if(super_cap1[0]<=0x36){            /*电容危险信号*/
+	Cap_Color=RED_BLUE;
+	}
+	else{
+	Cap_Color=GREEN;
+	}
+	Char_Graphic(&tx_client_char.clientData,"CL2",MODIFY,0,Cap_Color,25,strlen(super_cap1),5,(460),(1080*9/12),super_cap1);
+	UI_char.char_send_times=5;
+	}
+	else if(UI_char.char_send_times==5){/*更新 超级电容余量百分个位*/
+	Char_Graphic(&tx_client_char.clientData,"CL3",MODIFY,0,Cap_Color,25,strlen(super_cap2),5,(485),(1080*9/12),super_cap2);
+	UI_char.char_send_times=6;
+	}
+	else if(UI_char.char_send_times==6){/*添加 底盘跟随模式*/	
+	Char_Graphic(&tx_client_char.clientData,"CL5",ADD,0,YELLOW,25,strlen(follow_mode),5,(1400),(1080*9/12),follow_mode);
+	UI_char.char_send_times=7;	
+	}
+	else if(UI_char.char_send_times==7){/*更新 底盘小陀螺模式*/
+	if(Chassis_mode==GYRO){
+	Char_Graphic(&tx_client_char.clientData,"CL5",MODIFY,0,RED_BLUE,25,strlen(gyro_mode),5,(1400),(1080*9/12),gyro_mode);
+	}
+	UI_char.char_send_times=8;
+	}
+	else if(UI_char.char_send_times==8){/*更新 底盘跟随模式*/
+	if(Chassis_mode==FOLLOW){
+	Char_Graphic(&tx_client_char.clientData,"CL5",MODIFY,0,YELLOW,25,strlen(follow_mode),5,(1400),(1080*9/12),follow_mode);
+	}
+	UI_char.char_send_times=9;
+  }
+	else if(UI_char.char_send_times==9){/*添加 自瞄模式*/
+	Char_Graphic(&tx_client_char.clientData,"CL6",ADD,0,YELLOW,25,strlen(aimbot_mode),5,(50),(1080*9/13),aimbot_mode);
+	UI_char.char_send_times=10;
+  }
+	else if(UI_char.char_send_times==10){/*添加 自瞄状态*/
+	Char_Graphic(&tx_client_char.clientData,"CL7",ADD,0,GREEN,25,strlen(aimbot_status_off),5,(350),(1080*9/13),aimbot_status_off);
+	UI_char.char_send_times=11;
+  }
+	else if(UI_char.char_send_times==11){/*更新 自瞄状态*/
+	if(vision_info.Aimbot_mode==LOCK_ENEMY){
+	Char_Graphic(&tx_client_char.clientData,"CL7",MODIFY,0,RED_BLUE,25,strlen(aimbot_status_on),5,(350),(1080*9/13),aimbot_status_on);
+	}
+	UI_char.char_send_times=12;
+  }
+	else if(UI_char.char_send_times==12){/*更新 自瞄状态*/
+	if(vision_info.Aimbot_mode!=LOCK_ENEMY){
+	Char_Graphic(&tx_client_char.clientData,"CL7",MODIFY,0,GREEN,25,strlen(aimbot_status_off),5,(350),(1080*9/13),aimbot_status_off);
+	}
+	UI_char.char_send_times=13;
+  }
+	else if(UI_char.char_send_times==13){/*添加 连续射击模式*/	
+	Char_Graphic(&tx_client_char.clientData,"CL8",ADD,0,YELLOW,25,strlen(continuouds_shoot),5,(1400),(1080*9/13),continuouds_shoot);
+	UI_char.char_send_times=14;	
+	}
+	else if(UI_char.char_send_times==14){/*更新 单发射击螺模式*/
+	if(Shooting_mode==SINGLE_SHOOT){
+	Char_Graphic(&tx_client_char.clientData,"CL8",MODIFY,0,RED_BLUE,25,strlen(single_shoot),5,(1400),(1080*9/13),single_shoot);
+	}
+	UI_char.char_send_times=15;
+  }
+	else if(UI_char.char_send_times==15){/*更新 连续射击螺模式*/
+	if(Shooting_mode==CONTINUOUS_SHOOT){
+	Char_Graphic(&tx_client_char.clientData,"CL8",MODIFY,0,YELLOW,25,strlen(continuouds_shoot),5,(1400),(1080*9/13),continuouds_shoot);
+	}
+	UI_char.char_send_times=0;
+  }
 }
 
-void Client_graphic_Init()
+/**
+ *	@brief	字符串图层发送
+ */
+void Client_Char_update(void)
 {
-	if(state_first_graphic>=7)
-	{
-		state_first_graphic = 0;
-	}
 		//帧头
-		tx_client_char.txFrameHeader.SOF = 0xa5;
-		tx_client_char.txFrameHeader.DataLength = sizeof(ext_student_interactive_header_data_t) + sizeof(ext_client_string_t);
-		tx_client_char.txFrameHeader.Seq = 0;//包序号
-		memcpy(CliendTxBuffer,&tx_client_char.txFrameHeader,sizeof(xFrameHeader));
-		ref_append_crc8(CliendTxBuffer, sizeof(xFrameHeader));//头校验
+		tx_client_char.txFrameHeader.sof = JUDGE_FRAME_HEADER;
+		tx_client_char.txFrameHeader.data_length = sizeof(ext_aerial_data_t) + sizeof(ext_client_string_t);
+		tx_client_char.txFrameHeader.seq = 0;//包序号
+		memcpy(CliendTxBuffer,&tx_client_char.txFrameHeader,sizeof(std_frame_header_t));
+		Append_CRC8_Check_Sum(CliendTxBuffer, sizeof(std_frame_header_t));//头校验
 	
 		//命令码
-		tx_client_char.CmdID = 0x0301;
+		tx_client_char.CmdID = ID_COMMUNICATION;
 		
 		//数据段头结构
-		tx_client_char.dataFrameHeader.data_cmd_id = 0x0110;
-		tx_client_char.dataFrameHeader.send_ID     = Judge_Self_ID;
-		tx_client_char.dataFrameHeader.receiver_ID = Judge_SelfClient_ID;
+		tx_client_char.dataFrameHeader.cmd_id = INTERACT_ID_draw_char_graphic;
+		tx_client_char.dataFrameHeader.send_id     = judge_infop.GameRobotStatus.robot_id;
+		tx_client_char.dataFrameHeader.receive_id = judge_infop.self_client;
 		
 		//数据段
-		Draw_char();
-		memcpy(CliendTxBuffer+5, (uint8_t*)&tx_client_char.CmdID, 2+tx_client_char.txFrameHeader.DataLength);//加上命令码长度2
+		Char_Init();
+		memcpy(CliendTxBuffer+LEN_FRAME_HEAD, (uint8_t*)&tx_client_char.CmdID, LEN_CMD_ID+tx_client_char.txFrameHeader.data_length);//加上命令码长度2
 		
 		//帧尾
-		ref_append_crc16(CliendTxBuffer,sizeof(tx_client_char));
+		Append_CRC16_Check_Sum(CliendTxBuffer,sizeof(tx_client_char));
 		
-		uint16_t i;
-		for(i = 0; i<sizeof(tx_client_char); i++)
-		{
-			HAL_UART_Transmit(&huart4,(uint8_t *)&CliendTxBuffer[i],200,0x10);
-			while(__HAL_UART_GET_FLAG(&huart4, UART_FLAG_IDLE) != RESET);
-		}
-
+		HAL_UART_Transmit(&huart1,CliendTxBuffer,sizeof(tx_client_char),0x50);
 }
+
+/**
+ *	@brief	绘制line类型
+ */
+ext_line_one_data_t ext_line_one_data;
+void Line_Graphic(graphic_data_struct_t* graphic,//最终要发出去的数组的数据段内容
+									const char* name,
+									uint32_t operate_tpye,
+									uint32_t graphic_tpye,//绘制什么图像
+									uint32_t layer,
+									uint32_t color,
+									uint32_t start_angle,
+									uint32_t end_angle,
+									uint32_t width,
+									uint32_t start_x,
+									uint32_t start_y,
+									uint32_t radius,
+                   uint32_t end_x,
+									uint32_t end_y
+								)													
+{
+	for(char i=0;i<3;i++){
+	graphic->graphic_name[i] = name[i];	//字符索引
+	}
+	graphic->operate_tpye = operate_tpye; //图层操作
+	graphic->graphic_tpye = graphic_tpye;        
+	graphic->layer        = layer;//都在第一层
+	graphic->color        = color;//变色
+	graphic->start_angle  = start_angle;
+	graphic->end_angle    = end_angle;
+	graphic->width        = width;
+	graphic->start_x      = start_x;
+	graphic->start_y      = start_y;
+  graphic->radius       = radius;	
+	graphic->end_x        = end_x;
+	graphic->end_y        = end_y;
+}
+static uint8_t line_send_times=0;
+static void Line_int()//线形初始化
+{  
+	if(line_send_times==0){
+	Line_Graphic(&ext_line_one_data.Line_data_struct,"LI1",ADD,LINE,0,GREEN,0,0,10,600,0,0,650,250);
+	line_send_times=1;
+	}
+	else if(line_send_times==1){
+	Line_Graphic(&ext_line_one_data.Line_data_struct,"LI2",ADD,LINE,0,GREEN,0,0,10,650,250,0,1500,250);
+	line_send_times=2;
+	}
+	else if(line_send_times==2){
+	Line_Graphic(&ext_line_one_data.Line_data_struct,"LI3",ADD,LINE,0,GREEN,0,0,10,1500,0,0,1500,250);
+	line_send_times=0;
+	}
+}
+
+void Client_Line_update(void)
+{ 
+		//帧头
+		ext_line_one_data.txFrameHeader.sof = JUDGE_FRAME_HEADER;
+		ext_line_one_data.txFrameHeader.data_length = sizeof(ext_aerial_data_t) + sizeof(graphic_data_struct_t);
+		ext_line_one_data.txFrameHeader.seq = 0;//包序号
+		memcpy(CliendTxBuffer,&ext_line_one_data.txFrameHeader,sizeof(std_frame_header_t));
+		Append_CRC8_Check_Sum(CliendTxBuffer, sizeof(std_frame_header_t));//头校验
+
+		//命令码
+		ext_line_one_data.CmdID = ID_COMMUNICATION;
+
+		//数据段头结构
+		ext_line_one_data.dataFrameHeader.cmd_id = INTERACT_ID_draw_one_graphic;
+		ext_line_one_data.dataFrameHeader.send_id     = judge_infop.GameRobotStatus.robot_id;
+		ext_line_one_data.dataFrameHeader.receive_id = judge_infop.self_client;
+	
+		//数据段
+		Line_int();
+		memcpy(CliendTxBuffer+LEN_FRAME_HEAD, (uint8_t*)&ext_line_one_data.CmdID, LEN_CMD_ID+ext_line_one_data.txFrameHeader.data_length);//加上命令码长度2
+
+		//帧尾
+		Append_CRC16_Check_Sum(CliendTxBuffer,sizeof(ext_line_one_data));
+		
+		HAL_UART_Transmit(&huart1,CliendTxBuffer,sizeof(ext_line_one_data),0x50);
+		
+}
+
+
+
 
 
 
@@ -538,9 +451,10 @@ void referee_task(void)
 {
 	is_red_or_blue();
 	determine_ID();
-	JUDGE_Show_init();
-	JUDGE_Show_Data();
-	Client_graphic_Init();
+	
+	
+	Client_Char_update();
+	Client_Line_update();
 
 }
 

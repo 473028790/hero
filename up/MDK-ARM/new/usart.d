@@ -40,3 +40,6 @@ new\usart.o: ./user/rc.h
 new\usart.o: ./user/referee.h
 new\usart.o: ./user/crc.h
 new\usart.o: ./user/detect_task.h
+new\usart.o: ./user/imu_data_decode.h
+new\usart.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+new\usart.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h

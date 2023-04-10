@@ -137,34 +137,54 @@ uint32_t end_x:11;
 uint32_t end_y:11;
 } graphic_data_struct_t;
 
-//帧头  命令码   数据段头结构  数据段   帧尾
-//上传客户端
-typedef __packed struct
-{
-	xFrameHeader   							txFrameHeader;//帧头
-	uint16_t		 						CmdID;//命令码
-	ext_student_interactive_header_data_t   dataFrameHeader;//数据段头结构
-	graphic_data_struct_t  					clientData[7];//数据段
-	uint16_t		 						FrameTail;//帧尾
-}ext_SendClientData_t;
 
-//绘字符串
-typedef __packed struct
-{
-	graphic_data_struct_t grapic_data_struct;
-	uint8_t data[30];
-} ext_client_string_t;
 
+
+typedef struct
+{
+	uint8_t char_send_times :4;
+}UI_char_t;
+
+/*图层类型*/
+//bit 6-9图层数 最大为9，最小0
+//bit 10-13颜色
+typedef enum
+{
+	RED_BLUE  = 0,//红蓝主色	
+	YELLOW    = 1,
+	GREEN     = 2,
+	ORANGE    = 3,
+	FUCHSIA   = 4,	/*紫红色*/
+	PINK      = 5,
+	CYAN_BLUE = 6,	/*青色*/
+	BLACK     = 7,
+	WHITE     = 8
+}Graphic_Color;
+
+/*图层颜色类型*/
+//bit 14-31 角度 [0,360]
+
+/**********************************客户端绘图************************************************/
+
+//绘制字符串
 typedef __packed struct
 {
-	xFrameHeader txFrameHeader;								//帧头
+	std_frame_header_t txFrameHeader;			//帧头
 	uint16_t  CmdID;										//命令码
-	ext_student_interactive_header_data_t   dataFrameHeader;//数据段头结构
-	ext_client_string_t 					clientData;//数据段
+	ext_aerial_data_t   dataFrameHeader;//数据段头结构
+	ext_client_string_t clientData;//数据段
 	uint16_t	FrameTail;								//帧尾
 }ext_charstring_data_t;
 
-
+//绘制线形
+typedef __packed struct
+{
+	std_frame_header_t txFrameHeader;			
+	uint16_t  CmdID;										
+	ext_aerial_data_t   dataFrameHeader;
+	graphic_data_struct_t Line_data_struct;	
+	uint16_t	FrameTail;								
+}ext_line_one_data_t;
 
 
 

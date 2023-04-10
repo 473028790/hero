@@ -54,7 +54,8 @@ new\freertos.o: ../Core/Inc/can.h
 new\freertos.o: ./user/vision.h
 new\freertos.o: ./user/Report.h
 new\freertos.o: ../Core/Inc/usart.h
-new\freertos.o: ./user/referee.h
+new\freertos.o: ../Core/Src/referee_task.h
+new\freertos.o: ../Core/Src/judge_protocol.h
 new\freertos.o: ./user/crc.h
 new\freertos.o: ./user/detect_task.h
 new\freertos.o: ./user/chassis_mode.h

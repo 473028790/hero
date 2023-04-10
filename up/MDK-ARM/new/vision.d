@@ -1,6 +1,5 @@
 new\vision.o: user\vision.c
 new\vision.o: user\vision.h
-new\vision.o: ../Core/Inc/usart.h
 new\vision.o: ../Core/Inc/main.h
 new\vision.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h
 new\vision.o: ../Core/Inc/stm32f4xx_hal_conf.h
@@ -35,3 +34,4 @@ new\vision.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h
 new\vision.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h
 new\vision.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h
 new\vision.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
+new\vision.o: ../Core/Inc/usart.h

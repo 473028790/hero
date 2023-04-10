@@ -4,6 +4,26 @@ extern UART_HandleTypeDef huart1;
 uint8_t UART1_Rx_Buf[6];
 extern float last_store[3];
 
+
+typedef struct
+{
+	uint8_t Yaw_Low;
+	uint8_t Yaw_High;
+	uint8_t Pitch_Low;
+	uint8_t Pitch_High;
+	float Vision_Yaw;
+	float Vision_Pitch;
+}Vision_Data_Struct;
+
+typedef union
+{
+	float f_data;
+	uint8_t byte[4];
+}float_data;
+
+
+Vision_Data_Struct From_Vision_Data;
+
 union
 {
     float value;
@@ -13,41 +33,27 @@ union
 Vision_Data_S Vision_Data;
 Vision_Data_R Vision_Data_r;
 
-//uint8_t data[14]={0x80,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x7f};
-void vision_Send(void)
-{	
-    uint8_t head  =0x80;
-    uint8_t tail  =0x7F;
-    uint16_t speed=4000;
-    int colour=0;
-    int mode=0;
-    uint8_t data[16]={0x80,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x7f};
-    int h,m;
-    vision_data_send[0].value=last_store[2];
-    for(h = 1; h < 5; h++)
-    {
-        data[h]=vision_data_send[0].sendbuf[h-1];
-    }
-    vision_data_send[1].value=last_store[0];
-    for(h = 5; h < 9; h++)
-    {
-        data[h]=vision_data_send[1].sendbuf[h-5];
-    }
-    data[9]=speed>>8;
-    data[10]=speed;
-    data[11]=(uint8_t)colour;
-    data[12]=(uint8_t)mode;
-
-    HAL_UART_Transmit(&huart1,(uint8_t *)data,14,0x10);
-
-}
-
-
-void vision_handle(void)
+float Vision_Coff=0.5;
+uint16_t distance[3]={0};
+void Vision_decode(uint8_t *data)
 {
-    if(UART1_Rx_Buf[0]==0x80&&UART1_Rx_Buf[5]==0x7f)
-    {    
-        Vision_Data_r.MPU_yaw_increase=(float)(int16_t)(UART1_Rx_Buf[1]<<8|UART1_Rx_Buf[2]);
-        Vision_Data_r.MPU_pitch_increase=(float)(int16_t)(UART1_Rx_Buf[3]<<8|UART1_Rx_Buf[4]);
-    }
+//	#if(ADJUST_MODE==4)
+	if(*data==0x80 && (*(data+11))==0x7F)
+	{
+		float_data pitch_receive;
+		float_data yaw_receive;
+		for(int i=0;i<4;i++)
+		{
+			yaw_receive.byte[i]=*(data+1+i);
+		}
+			for(int i=0;i<4;i++)
+		{
+			pitch_receive.byte[i]=*(data+5+i);
+		}
+		distance[0] = *(data+9);
+		distance[1] = *(data+10);
+		distance[2] = distance[0] *100+distance[1];
+		From_Vision_Data.Vision_Pitch =pitch_receive.f_data;
+		From_Vision_Data.Vision_Yaw = yaw_receive.f_data;
+	}
 }

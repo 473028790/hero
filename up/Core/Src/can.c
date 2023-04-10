@@ -258,9 +258,9 @@ void CAN1_Filterinit_And_Start(void)
 	can1_filter.FilterFIFOAssignment = 0;
 	can1_filter.FilterActivation = ENABLE;
 	can1_filter.SlaveStartFilterBank = 0;
-	HAL_CAN_ConfigFilter(&hcan1,&can1_filter);//��ʼ�� CAN1 ������
-	HAL_CAN_Start(&hcan1);//���� CAN1
-	HAL_CAN_ActivateNotification(&hcan1,CAN_IT_RX_FIFO0_MSG_PENDING);//����CAN1 FIFO0 ����
+	HAL_CAN_ConfigFilter(&hcan1,&can1_filter);//锟斤拷始锟斤拷 CAN1 锟斤拷锟斤拷锟斤拷
+	HAL_CAN_Start(&hcan1);//锟斤拷锟斤拷 CAN1
+	HAL_CAN_ActivateNotification(&hcan1,CAN_IT_RX_FIFO0_MSG_PENDING);//锟斤拷锟斤拷CAN1 FIFO0 锟斤拷锟斤拷
 }
 
 void CAN2_Filterinit_And_Start(void)
@@ -631,15 +631,12 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
         /*
 				gimbal_yaw_motor.ActualSpeed=(float)((int16_t)(Data[2]<<8|Data[3]));
         */
-			break; 
-      
+			break;
 			case 0x207://dial
 			get_motor_measure(&motor_trigger, Data);
 			dial_data.angle=(float)((int16_t)(Data[0]<<8|Data[1]));
 			dial_motor.ActualSpeed=(float)((int16_t)(Data[2]<<8|Data[3]));
-
 			break;
-
     	case 0x666://supercap
         supercap.Bat_V=(float)((int16_t)(Data[0]<<8|Data[1]));
         supercap.power=(float)((int16_t)(Data[2]<<8|Data[3]));

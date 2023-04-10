@@ -357,7 +357,7 @@
               <MiscControls></MiscControls>
               <Define></Define>
               <Undefine></Undefine>
-              <IncludePath>..\Core\Inc</IncludePath>
+              <IncludePath>..\Core\Inc;../Core/Inc</IncludePath>
             </VariousControls>
           </Aads>
           <LDads>
@@ -424,11 +424,6 @@
               <FilePath>.\user\detect_task.c</FilePath>
             </File>
             <File>
-              <FileName>referee.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\user\referee.c</FilePath>
-            </File>
-            <File>
               <FileName>crc.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\user\crc.c</FilePath>
@@ -447,6 +442,16 @@
               <FileName>kalman.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\user\kalman.c</FilePath>
+            </File>
+            <File>
+              <FileName>judge_protocol.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Src\judge_protocol.c</FilePath>
+            </File>
+            <File>
+              <FileName>referee_task.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Src\referee_task.c</FilePath>
             </File>
           </Files>
         </Group>

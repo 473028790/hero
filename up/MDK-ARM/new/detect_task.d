@@ -34,6 +34,10 @@ new\detect_task.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h
 new\detect_task.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h
 new\detect_task.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h
 new\detect_task.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
+new\detect_task.o: user\imu_data_decode.h
+new\detect_task.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+new\detect_task.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+new\detect_task.o: user\packet.h
 new\detect_task.o: ../Core/Inc/can.h
 new\detect_task.o: user\rc.h
 new\detect_task.o: ../Core/Inc/FreeRTOSConfig.h

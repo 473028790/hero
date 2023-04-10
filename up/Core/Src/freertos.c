@@ -180,7 +180,7 @@ void chassis_task(void const * argument)
   for(;;)
   {
 		ReadRc_Chassis();
-    Function_Choose();
+		Function_Choose();
 		Chassis_PID();
    	vTaskDelayUntil(&PreviousWakeTime1,TimeIncrement);
   }
@@ -205,15 +205,13 @@ void Gimbal_Task(void const * argument)
   {
 		ReadRc_Gimbal();
 		Gimbal_PID();
-    
-    Friction_PID();
-		
-    ReadRc_dial();
-    dial_PID();
 
+		Friction_PID();
 
+		ReadRc_dial();
+		dial_PID();
 
-    Offline_task(); 
+		Offline_task(); 
 
 	  vTaskDelayUntil(&PreviousWakeTime1,TimeIncrement);
   }
@@ -261,8 +259,8 @@ void vofa_Task(void const * argument)
   for(;;)
   {
     //vision_Send();
-		report_SendData(Friction_motor[1].target_speed,Friction_motor[1].ActualSpeed,Friction_motor[0].target_speed,Friction_motor[0].ActualSpeed,0);
-	  vTaskDelayUntil(&PreviousWakeTime1,TimeIncrement);
+		report_SendData(Friction_motor[0].target_speed,Friction_motor[0].ActualSpeed,Friction_motor[1].target_speed,Friction_motor[1].ActualSpeed,0);
+		vTaskDelayUntil(&PreviousWakeTime1,TimeIncrement);
   }
   /* USER CODE END vofa_Task */
 }
@@ -279,7 +277,6 @@ void Detect_Task(void const * argument)
   /* USER CODE BEGIN Detect_Task */
 
   detect_init();
-  //çŠşé˛ä¸?ćŽľćśé?
   
   static portTickType PreviousWakeTime1;
   const portTickType TimeIncrement=pdMS_TO_TICKS(57);
@@ -289,9 +286,9 @@ void Detect_Task(void const * argument)
   /* Infinite loop */
   for(;;)
   {
-    DetectTask();
-	  vTaskDelayUntil(&PreviousWakeTime1,TimeIncrement);
-    vTaskDelay(DETECT_TASK_INIT_TIME);
+    	DetectTask();
+			vTaskDelayUntil(&PreviousWakeTime1,TimeIncrement);
+   		vTaskDelay(DETECT_TASK_INIT_TIME);
   }
   /* USER CODE END Detect_Task */
 }
@@ -335,9 +332,8 @@ void super_cap_task(void const * argument)
   /* Infinite loop */
   for(;;)
   {
-		CAN1_0x333_TX(48);
-		//CAN2_0x300_TX(66);
-	  vTaskDelayUntil(&PreviousWakeTime1,TimeIncrement);
+		determine_super_target();
+		vTaskDelayUntil(&PreviousWakeTime1,TimeIncrement);
   }
   /* USER CODE END super_cap_task */
 }

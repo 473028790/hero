@@ -19,6 +19,7 @@ extern int dial_number;
 extern int dial_number1;
 extern int dial_number2;
 extern KEY	KEY_Date;
+
 float last_store[3];	//储存陀螺仪测量的角度
 
 int16_t store[3]; 			//储存陀螺仪测量的角速度
@@ -152,8 +153,8 @@ void gimbal_yaw_inner_pid_init()             //yaw轴内环PID初始化
    yaw_inner_pid.target=0.0;
    yaw_inner_pid.ActualSpeed=0.0;
 
-   yaw_inner_pid.kp=165.0;
-   yaw_inner_pid.ki=0.75;
+   yaw_inner_pid.kp=260.0;
+   yaw_inner_pid.ki=2.3;
    yaw_inner_pid.kd=0;
    yaw_inner_pid.integral=0;
 
@@ -188,7 +189,7 @@ void gimbal_pitch_inner_pid_init()             //pitch轴内环PID初始化
    pitch_inner_pid.target=0.0;
    pitch_inner_pid.ActualSpeed=0.0;
 
-   pitch_inner_pid.kp=120;
+   pitch_inner_pid.kp=130;
    pitch_inner_pid.ki=0.8;
    pitch_inner_pid.kd=0;
    pitch_inner_pid.integral=0;
@@ -278,7 +279,7 @@ void Chassis_PID()          //底盘4个电机进行pid运算
 		CAN1_0X200[3]=wheel_moter[3].out;
 	
 }
-
+int GYR_first=0;
 void Gimbal_PID()           //云台PID运算
 {
    get_eular(last_store);
@@ -288,6 +289,14 @@ void Gimbal_PID()           //云台PID运算
    yaw_outer_pid.ActualSpeed=last_store[2];     //反馈的角度设置为外环的实际值
    yaw_inner_pid.ActualSpeed=store[2]*0.1;   //将绕z轴转动的角速度（yaw轴）赋值结构体内环
 
+	 GYR_first++;
+	if(GYR_first<5)
+	{
+		pitch_outer_pid.target=pitch_outer_pid.ActualSpeed;
+		yaw_outer_pid.target=yaw_outer_pid.ActualSpeed;
+	}
+	else if(GYR_first>5) GYR_first=6;
+	
    if(pitch_outer_pid.target>=25.0f+Degree_po) pitch_outer_pid.target=25.0f+Degree_po;         //俯仰角限幅
    else if(pitch_outer_pid.target<=-14.0f+Degree_po) pitch_outer_pid.target=-14.0f+Degree_po;
 
@@ -364,7 +373,7 @@ void get_total_angle(struct dial_data *p)
 	p->last_angle = p->angle;
 }
 
-float dial_turns=1.0;
+float dial_turns=1.5;
 //确定拨盘目标圈数
 void get_moto_offset(struct dial_data *ptr)
 {
@@ -385,10 +394,11 @@ void get_back_offset(struct dial_data *ptr)
 
 
 //int dial_mode=infantry;
-int dial_mode=infantry;
+int dial_mode=hero;
 extern int dial_sign;
 extern int dial_sign1;
 extern int dial_back_sign;
+extern int infra_red_GPIO;
 void dial_PID()             //拨盘PID运算
 {
 	
@@ -401,6 +411,8 @@ void dial_PID()             //拨盘PID运算
          Gimbal_outer_PID(&dial_outer_pid);
          dial_inner_pid.target=dial_outer_pid.out;
          Gimbal_inner_PID(&dial_inner_pid);
+		
+		
 		if(STOP==1)
 		{
          if(fabs(dial_outer_pid.ActualSpeed-dial_outer_pid.target)<5)     //确定结束后，运行结束程序
@@ -416,7 +428,7 @@ void dial_PID()             //拨盘PID运算
 		{
          if(fabs(dial_outer_pid.ActualSpeed-dial_outer_pid.target)<10)     //确定结束后，运行结束程序
          {
-            dial_sign1=0;
+            dial_sign=0;
             dial_back_sign=0;
             dial_number=0;
             dial_number1=0;

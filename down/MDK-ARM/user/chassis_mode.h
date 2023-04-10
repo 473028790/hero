@@ -2,6 +2,11 @@
 #define _CHASSIS_MODE_H_
 #include "stdint.h"
 
+
+#define cheassis_follow 0
+#define Small_gyroscope 1
+
+
 void Function_Choose(void);
 void CtoG(void);
 void Circle(int16_t right_Y,int16_t right_X);

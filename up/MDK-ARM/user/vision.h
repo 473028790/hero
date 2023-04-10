@@ -1,13 +1,9 @@
 #ifndef _VISION_H_
 #define _VISION_H_
 
+#include "main.h"
 
-#define FRAME_HEADER 0x80
-#define FRAME_TAIL 0x7F
-
-
-void vision_Send(void);
-void vision_handle(void);
+void Vision_decode(uint8_t *data);
 
 #endif
 

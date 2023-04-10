@@ -87,4 +87,5 @@ extern void slove_data_error(void);
 extern void RC_restart(uint16_t dma_buf_num);
 extern void slove_RC_offline(void);
 void ReadRc_dial(void);
+extern uint8_t GYR_data_is_error(void);
 #endif

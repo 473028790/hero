@@ -31,7 +31,7 @@
 #include "can.h"
 #include "vision.h"
 #include "Report.h"
-#include "referee.h"
+#include "referee_task.h"
 #include "detect_task.h"
 #include "chassis_mode.h"
 
@@ -41,6 +41,7 @@ extern void dial_PID(void);
 extern void Friction_PID(void);
 extern int infra_red_GPIO;
 extern int infra_red_MODE;
+extern judge_info_t judge_infop;
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -143,11 +144,11 @@ void MX_FREERTOS_Init(void) {
   vofa__TaskHandle = osThreadCreate(osThread(vofa__Task), NULL);
 
   /* definition and creation of client_ */
-  osThreadDef(client_, client, osPriorityLow, 0, 128);
+  osThreadDef(client_, client, osPriorityBelowNormal, 0, 128);
   client_Handle = osThreadCreate(osThread(client_), NULL);
 
   /* definition and creation of super_cap */
-  osThreadDef(super_cap, super_cap_task, osPriorityIdle, 0, 128);
+  osThreadDef(super_cap, super_cap_task, osPriorityBelowNormal, 0, 128);
   super_capHandle = osThreadCreate(osThread(super_cap), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
@@ -234,7 +235,7 @@ void can_Task(void const * argument)
   {
 		Offline_task();  			
 	  CAN1_send();
-	  CAN2_send();
+	  //CAN2_send();
 		vTaskDelayUntil(&PreviousWakeTime1,TimeIncrement);
   }
   /* USER CODE END can_Task */
@@ -257,7 +258,7 @@ void vofa_Task(void const * argument)
   for(;;)
   {
     //vision_Send();
-		report_SendData(wheel_moter[3].ActualSpeed,wheel_moter[3].target_speed,0,0,0);
+		report_SendData(wheel_moter[0].target_speed,wheel_moter[0].ActualSpeed,wheel_moter[1].ActualSpeed,wheel_moter[2].ActualSpeed,0);
 	  vTaskDelayUntil(&PreviousWakeTime1,TimeIncrement);
   }
   /* USER CODE END vofa_Task */
@@ -273,15 +274,12 @@ void vofa_Task(void const * argument)
 void client(void const * argument)
 {
   /* USER CODE BEGIN client */
-  static portTickType PreviousWakeTime1;
-	const portTickType TimeIncrement=pdMS_TO_TICKS(100);
-	PreviousWakeTime1=xTaskGetTickCount();
-
+	uint32_t previousWakeTime=osKernelSysTick();
   /* Infinite loop */
   for(;;)
   {
-    //referee_task();
-	  vTaskDelayUntil(&PreviousWakeTime1,TimeIncrement);
+    UI_Ctrl();
+	  osDelayUntil(&previousWakeTime,5);
   }
   /* USER CODE END client */
 }
@@ -292,19 +290,47 @@ void client(void const * argument)
 * @param argument: Not used
 * @retval None
 */
+extern int ciecle_speed;
+
 /* USER CODE END Header_super_cap_task */
+int cnt225=0;
+extern int Chassis_speed_proportion;
 void super_cap_task(void const * argument)
 {
   /* USER CODE BEGIN super_cap_task */
-  static portTickType PreviousWakeTime1;
-	const portTickType TimeIncrement=pdMS_TO_TICKS(100);
-	PreviousWakeTime1=xTaskGetTickCount();
+	uint32_t previousWakeTime=osKernelSysTick();
   /* Infinite loop */
   for(;;)
   {
-		//CAN1_0x333_TX(48);
-		//CAN2_0x300_TX(66);
-	  vTaskDelayUntil(&PreviousWakeTime1,TimeIncrement);
+		cnt225++;
+		//CAN1_0x333_TX(55);
+		
+		if(judge_infop.GameRobotStatus.chassis_power_limit==0)
+		{
+			CAN1_0x333_TX(55);
+			ciecle_speed=3500;
+			Chassis_speed_proportion=4000;
+		}
+		else if(judge_infop.GameRobotStatus.chassis_power_limit==70)
+		{
+			CAN1_0x333_TX(67);
+			ciecle_speed=4200;
+			Chassis_speed_proportion=4000;
+		}
+		else if(judge_infop.GameRobotStatus.chassis_power_limit==90)
+		{
+			CAN1_0x333_TX(87);
+			ciecle_speed=5200;
+			Chassis_speed_proportion=5000;
+		}
+		else if(judge_infop.GameRobotStatus.chassis_power_limit==120)
+		{
+			CAN1_0x333_TX(118);
+			ciecle_speed=6200;
+			Chassis_speed_proportion=6000;
+		}
+		
+	  osDelayUntil(&previousWakeTime,100);
   }
   /* USER CODE END super_cap_task */
 }

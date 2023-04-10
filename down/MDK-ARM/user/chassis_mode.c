@@ -8,11 +8,9 @@
 #include "rc.h"
 extern KEY	KEY_Date;
 
-#define front_degree 1852.0f    //当yaw朝前的时候，yaw电机的ecd
+#define front_degree 1397.0f    //当yaw朝前的时候，yaw电机的ecd
 #define cheassis_follow_speed 200.00f
 
-#define cheassis_follow 0
-#define Small_gyroscope 1
 int chassis_mode=cheassis_follow;
 int Q_sign=1;
 int E_sign=0;
@@ -89,14 +87,14 @@ void CtoG()
 		if(ecd_diff>=540) ecd_diff=540;         //跟随速度限幅
 		else if(ecd_diff <=-540) ecd_diff=-540;
 		
-		wheel_moter[0].target_speed+=(ecd_diff/cheassis_follow_speed)*1000.0f;
-		wheel_moter[1].target_speed+=(ecd_diff/cheassis_follow_speed)*1000.0f;
-		wheel_moter[2].target_speed+=(ecd_diff/cheassis_follow_speed)*1000.0f;
-		wheel_moter[3].target_speed+=(ecd_diff/cheassis_follow_speed)*1000.0f;
+		wheel_moter[0].target_speed+=-((ecd_diff/cheassis_follow_speed)*1800.0f);
+		wheel_moter[1].target_speed+=-((ecd_diff/cheassis_follow_speed)*1800.0f);
+		wheel_moter[2].target_speed+=-((ecd_diff/cheassis_follow_speed)*1800.0f);
+		wheel_moter[3].target_speed+=-((ecd_diff/cheassis_follow_speed)*1800.0f);
 	}
 }
 /*************************************小陀螺**************************************/	
-
+int ciecle_speed=5200;
 void Circle(int16_t right_X,int16_t right_Y)
 {
 		//底盘坐标系的速度
@@ -122,18 +120,18 @@ void Circle(int16_t right_X,int16_t right_Y)
 		Ysin=right_Y*sinf(hudu);
 		Ycos=right_Y*cosf(hudu);
 		
-		wheel_moter[0].target_speed=3000;   //旋转量
-		wheel_moter[1].target_speed=3000;
-		wheel_moter[2].target_speed=3000;
-		wheel_moter[3].target_speed=3000;
+		wheel_moter[0].target_speed=ciecle_speed;   //旋转量
+		wheel_moter[1].target_speed=ciecle_speed;
+		wheel_moter[2].target_speed=ciecle_speed;
+		wheel_moter[3].target_speed=ciecle_speed;
 
-		V_x=Xcos-Ysin;
-		V_y=Xsin+Ycos;
+		V_x=Xcos+Ysin;
+		V_y=-Xsin+Ycos;
 			
-	wheel_moter[0].target_speed+=(float)(-V_x+V_y);
-	wheel_moter[1].target_speed+=(float)(-V_x-V_y);
-	wheel_moter[2].target_speed+=(float)(V_x-V_y);
-	wheel_moter[3].target_speed+=(float)(V_x+V_y);
+	wheel_moter[0].target_speed+=(float)(V_x-V_y);
+	wheel_moter[1].target_speed+=(float)(V_x+V_y);
+	wheel_moter[2].target_speed+=(float)(-V_x+V_y);
+	wheel_moter[3].target_speed+=(float)(-V_x-V_y);
 
 }
 

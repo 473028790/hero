@@ -8,7 +8,7 @@
 #include "rc.h"
 extern KEY	KEY_Date;
 
-#define front_degree 1852.0f    //当yaw朝前的时候，yaw电机的ecd
+#define front_degree 1397.0f    //当yaw朝前的时候，yaw电机的ecd
 #define cheassis_follow_speed 200.00f
 
 #define cheassis_follow 0

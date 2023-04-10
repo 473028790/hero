@@ -114,7 +114,7 @@ int main(void)
 	PID_init();
   Usart_Init_Report();
   imu_data_decode_init();
-
+	CAN1_0x333_TX(68);
 	//CAN1_0x333_TX(48);
 //	
 //	

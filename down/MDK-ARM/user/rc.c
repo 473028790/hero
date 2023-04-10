@@ -9,9 +9,7 @@
 #include "pid.h"
 #include "tim.h"
 #include "kalman.h"
-#include "referee.h"
 extern int dial_mode;
-extern ext_power_heat_data_t   power;
 float ch1,ch2,ch3,ch4,s1,s2;
 uint8_t hi229_data;
 float degree_k=0.01;   
@@ -222,7 +220,7 @@ void RC_restart(uint16_t dma_buf_num)
 	NVIC_SystemReset();
 	*/
 }
-
+int Chassis_speed_proportion=4000; //右边控制底盘最大速度的比例
 int chassis_cnt=0;
 void ReadRc_Chassis(void)
 {
@@ -392,11 +390,12 @@ void ReadRc_Chassis(void)
 		
 		if(MODE!=2)
 		{
-			wheel_moter[0].target_speed=(float)(-right_X+right_Y);
-			wheel_moter[1].target_speed=(float)(-right_X-right_Y);
-			wheel_moter[2].target_speed=(float)(right_X-right_Y);
-			wheel_moter[3].target_speed=(float)(right_X+right_Y);
+			wheel_moter[0].target_speed=(float)(right_X-right_Y);
+			wheel_moter[1].target_speed=(float)(+right_X+right_Y);
+			wheel_moter[2].target_speed=(float)(-right_X+right_Y);
+			wheel_moter[3].target_speed=(float)(-right_X-right_Y);
 		}
+		
 	}
 
 	if(STOP==2)
@@ -404,10 +403,10 @@ void ReadRc_Chassis(void)
 		right_X=KEY_Date.R_X;
 		right_Y=KEY_Date.R_Y;
 
-			wheel_moter[0].target_speed=(float)(-right_X+right_Y);
-			wheel_moter[1].target_speed=(float)(-right_X-right_Y);
-			wheel_moter[2].target_speed=(float)(right_X-right_Y);
-			wheel_moter[3].target_speed=(float)(right_X+right_Y);
+			wheel_moter[0].target_speed=(float)(right_X-right_Y);
+			wheel_moter[1].target_speed=(float)(+right_X+right_Y);
+			wheel_moter[2].target_speed=(float)(-right_X+right_Y);
+			wheel_moter[3].target_speed=(float)(-right_X-right_Y);
 
 	}	
 

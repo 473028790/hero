@@ -42,5 +42,3 @@ new\rc.o: ../Core/Inc/can.h
 new\rc.o: user\pid.h
 new\rc.o: ../Core/Inc/tim.h
 new\rc.o: user\kalman.h
-new\rc.o: user\referee.h
-new\rc.o: user\crc.h

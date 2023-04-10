@@ -57,4 +57,8 @@ new\freertos.o: ../Core/Inc/usart.h
 new\freertos.o: ./user/referee.h
 new\freertos.o: ./user/crc.h
 new\freertos.o: ./user/detect_task.h
+new\freertos.o: ./user/imu_data_decode.h
+new\freertos.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+new\freertos.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+new\freertos.o: ./user/packet.h
 new\freertos.o: ./user/chassis_mode.h

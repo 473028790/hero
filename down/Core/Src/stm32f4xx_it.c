@@ -278,10 +278,7 @@ void TIM8_TRG_COM_TIM14_IRQHandler(void)
 void UART4_IRQHandler(void)
 {
   /* USER CODE BEGIN UART4_IRQn 0 */
-  if(__HAL_UART_GET_FLAG(&huart4, UART_FLAG_IDLE) != RESET)
-	{
-			UART_IDLECallBack(&huart4);
-	}
+
   /* USER CODE END UART4_IRQn 0 */
   HAL_UART_IRQHandler(&huart4);
   /* USER CODE BEGIN UART4_IRQn 1 */
@@ -295,7 +292,7 @@ void UART4_IRQHandler(void)
 void UART5_IRQHandler(void)
 {
   /* USER CODE BEGIN UART5_IRQn 0 */
-	
+	UART_IDLECallBack(&huart5);
   /* USER CODE END UART5_IRQn 0 */
   HAL_UART_IRQHandler(&huart5);
   /* USER CODE BEGIN UART5_IRQn 1 */

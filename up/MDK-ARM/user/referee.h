@@ -179,4 +179,5 @@ extern ext_event_data_t					Event_data;//³¡µØÊÂ¼þ
 void referee_task(void);
 extern  int determine_shoot(void);
 extern void judge_rcdata(unsigned char *data,int lenth);
+void determine_super_target(void);
 #endif

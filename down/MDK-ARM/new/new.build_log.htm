@@ -21,13 +21,28 @@ Target DLL:      CMSIS_AGDI.dll V1.33.0.0
 Dialog DLL:      TCM.DLL V1.53.0.0
  
 <h2>Project:</h2>
-C:\Users\47302\Desktop\progress\down\MDK-ARM\new.uvprojx
-Project File Date:  12/17/2022
+C:\Users\47302\Desktop\hero 3.4\down\MDK-ARM\new.uvprojx
+Project File Date:  04/09/2023
 
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 7 (build 960)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
 Build target 'new'
-"new\new.axf" - 0 Error(s), 0 Warning(s).
+compiling task.c...
+compiling rc.c...
+compiling pid.c...
+compiling can.c...
+../Core/Src/can.c(584): warning:  #177-D: variable "press"  was declared but never referenced
+  		static int press;
+../Core/Src/can.c: 1 warning, 0 errors
+compiling usart.c...
+compiling detect_task.c...
+compiling chassis_mode.c...
+compiling main.c...
+compiling freertos.c...
+linking...
+Program Size: Code=25046 RO-data=1502 RW-data=500 ZI-data=23628  
+FromELF: creating hex file...
+"new\new.axf" - 0 Error(s), 1 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -50,7 +65,7 @@ Package Vendor: Keil
 <h2>Collection of Component Files used:</h2>
 
    * Component: ARM::CMSIS:CORE:5.5.0
-Build Time Elapsed:  00:00:00
+Build Time Elapsed:  00:00:05
 </pre>
 </body>
 </html>

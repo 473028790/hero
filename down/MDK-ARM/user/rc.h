@@ -10,7 +10,6 @@
 #define RC_SW_UP ((uint16_t)1)
 #define RC_SW_MID ((uint16_t)3)
 #define RC_SW_DOWN ((uint16_t)2)
-#define Chassis_speed_proportion (7000)//右边控制底盘最大速度的比例
 /* ----------------------- PC Key Definition-------------------------------- */
 #define KEY_PRESSED_OFFSET_W ((uint16_t)0x01<<0)
 #define KEY_PRESSED_OFFSET_S ((uint16_t)0x01<<1)

@@ -20,11 +20,13 @@
 #ifndef DETECT_Task_H
 #define DETECT_Task_H
 #include "main.h"
+#include "imu_data_decode.h"  
+
 //错误码以及对应设备顺序
 enum errorList
 {
     DBUSTOE = 0,
-    YawGimbalMotorTOE,
+    GYR,
     PitchGimbalMotorTOE,
     Control_detectionTOE,
     ChassisMotor1TOE,

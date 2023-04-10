@@ -37,5 +37,3 @@ new\task.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h
 new\task.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h
 new\task.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
 new\task.o: user\rc.h
-new\task.o: user\referee.h
-new\task.o: user\crc.h

@@ -28,7 +28,7 @@
 #include "cmsis_os.h"
 
 #define DETECT_TASK_INIT_TIME 57
-#define DETECT_CONTROL_TIME 10
+#define DETECT_CONTROL_TIME 57
 #define Control_detection_TIME 3000
 
 //初始化错误列表
@@ -175,7 +175,7 @@ static void DetectInit(uint32_t time)
     uint16_t setItem[errorListLength][3] =
         {
             {30, 40, 15}, //SBUS
-            {2, 3, 14},   //yaw
+            {30, 40, 14},   //gyr
             {2, 3, 13},   //pitch
             {3000, 3000, 12}, //Control_detection
             {10, 10, 11}, //motor1
@@ -206,7 +206,12 @@ static void DetectInit(uint32_t time)
     errorList[DBUSTOE].dataIsErrorFun = RC_data_is_error;
     errorList[DBUSTOE].solveLostFun = slove_RC_lost;
     errorList[DBUSTOE].solveDataErrorFun = 0;
-
+		
+    errorList[GYR].dataIsErrorFun = GYR_data_is_error;
+    errorList[GYR].solveLostFun = slove_RC_lost;
+    errorList[GYR].solveDataErrorFun = 0;
+		
+		
 #if GIMBAL_MOTOR_6020_CAN_LOSE_SLOVE
     errorList[YawGimbalMotorTOE].solveLostFun = GIMBAL_lose_slove;
     errorList[PitchGimbalMotorTOE].solveLostFun = GIMBAL_lose_slove;

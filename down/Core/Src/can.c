@@ -528,9 +528,10 @@ int cnt500=0;
 extern int dial_red;
 int cnt50=0;
   CAN_RxHeaderTypeDef CAN2_Rx;
+CAN_RxHeaderTypeDef CAN1_RX;
 void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 {
-  CAN_RxHeaderTypeDef CAN1_RX;
+  //CAN_RxHeaderTypeDef CAN1_RX;
   //CAN_RxHeaderTypeDef CAN2_Rx;
 
 	if(hcan->Instance==CAN1)     //CAN1

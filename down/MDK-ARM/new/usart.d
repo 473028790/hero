@@ -37,6 +37,7 @@ new\usart.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
 new\usart.o: ./user/vision.h
 new\usart.o: ./user/packet.h
 new\usart.o: ./user/rc.h
-new\usart.o: ./user/referee.h
+new\usart.o: ../Core/Src/referee_task.h
+new\usart.o: ../Core/Src/judge_protocol.h
 new\usart.o: ./user/crc.h
 new\usart.o: ./user/detect_task.h

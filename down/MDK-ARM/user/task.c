@@ -2,10 +2,8 @@
 #include "pid.h"
 #include "can.h"
 #include "rc.h"
-#include "referee.h"
 int cnt5=0;
 int16_t chassis_power_max;
-extern ext_game_robot_status_t My_status;//自身状态
 void Offline_task()                 //离线
 {
     cnt5++;
@@ -114,25 +112,4 @@ void CAN2_send()                    //CAN2
 
     //测试pitch
     //CAN2_0x1FF_TX(0,-(pitch_inner_pid.out), 0, 0);
-}
-
-void CAN1_super()
-{
-	if(My_status.robot_level==1)
-	{
-		CAN1_0x333_TX(52);
-	}
-	else if(My_status.robot_level==2)
-	{
-		CAN1_0x333_TX(57);
-	}
-	else if(My_status.robot_level==3)
-	{
-		CAN1_0x333_TX(62);
-	}
-	else
-	{
-		CAN1_0x333_TX(48);
-	}
-
 }

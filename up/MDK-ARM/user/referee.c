@@ -174,17 +174,18 @@ void determine_ID(void)
 	}
 }
 
+
 /**
-  * @brief  判断当前热量剩余能否发子弹
+  * @brief  判断当前等级来确定超电功率
   * @param  int
   * @retval 
-  * @attention  数据打包,打包完成后通过串口发送到裁判系统
+  * @attention  数据打包,打包完成后通过串口发送到超电
   */
- int determine_shoot(void)
+ void determine_super_target(void)
  {
-	int number=0;
-	number=((My_status.shooter_id1_42mm_cooling_limit)-(power.shooter_id1_42mm_cooling_heat))/100;
-	return number;
+	int super_target;
+	super_target=My_status.chassis_power_limit-2;
+	CAN1_0x333_TX(super_target);
  }
 
 
@@ -335,17 +336,6 @@ void JUDGE_Show_Data(void)
 		while(__HAL_UART_GET_FLAG(&huart4, UART_FLAG_IDLE) != RESET);
 	}	 
 }
-
-
-
-
-
-
-
-
-
-
-
 
 
 #define send_max_len     113

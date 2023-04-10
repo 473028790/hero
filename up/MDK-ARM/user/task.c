@@ -43,14 +43,14 @@ void Offline_task()                 //离线
         dial_motor.Pr_Error=0;
 
         pitch_outer_pid.out=0;
-        pitch_outer_pid.target=0;
+        //pitch_outer_pid.target=0;
         pitch_outer_pid.integral=0;
         pitch_outer_pid.voltage=0;
         pitch_outer_pid.thisError=0;
         pitch_outer_pid.Last_Error=0;
 
         yaw_outer_pid.out=0;
-        yaw_outer_pid.target=0;
+        //yaw_outer_pid.target=0;
         yaw_outer_pid.integral=0;
         yaw_outer_pid.voltage=0;
         yaw_outer_pid.thisError=0;
@@ -94,20 +94,26 @@ void CAN1_send()                    //CAN1
     //CAN1_0x200_TX(CAN1_0X200[0],CAN1_0X200[1],CAN1_0X200[2],CAN1_0X200[3]);
     //CAN1_0x200_TX(wheel_moter[0].out,wheel_moter[1].out,wheel_moter[2].out,wheel_moter[3].out);
     //CAN1_0x200_TX(0,0,0,wheel_moter[3].out);
-	if(dial_mode==infantry) CAN1_0x1FF_TX(yaw_inner_pid.out, 0, dial_motor.out, 0);
-	else if(dial_mode==hero) CAN1_0x1FF_TX(yaw_inner_pid.out, 0, dial_inner_pid.out, 0);
+	
+	
+	
+	if(dial_mode==infantry) CAN1_0x1FF_TX(-(yaw_inner_pid.out), 0, dial_motor.out, 0);
+	else if(dial_mode==hero) CAN1_0x1FF_TX(-(yaw_inner_pid.out), 0, dial_inner_pid.out, 0);
+	
+	
+	
     //CAN1_0x1FF_TX(yaw_inner_pid.out, 0, dial_inner_pid.out, 0);
 		//CAN1_0x1FF_TX(yaw_inner_pid.out, 0, dial_motor.out, 0);
 		//CAN1_0x1FF_TX(0, 0, dial_motor.out, 0);
     //测试yaw
     //CAN1_0x1FF_TX(0, 0, dial_inner_pid.out, 0);
-		//CAN1_0x1FF_TX(yaw_inner_pid.out,0, 0, 0);
+		//CAN1_0x1FF_TX(-(yaw_inner_pid.out),0, 0, 0);
 
 }
 void CAN2_send()                    //CAN2
 {
     
-   CAN2_0x200_TX(Friction_motor[0].out,Friction_motor[1].out, 0, 0);
+   //CAN2_0x200_TX(Friction_motor[0].out,Friction_motor[1].out, 0, 0);
 
 	
     //测试left摩擦轮用
@@ -116,7 +122,7 @@ void CAN2_send()                    //CAN2
     //CAN2_0x200_TX(0,Friction_motor[1].out, 0, 0);
 
     //测试pitch
-    CAN2_0x1FF_TX(0,-(pitch_inner_pid.out), 0, 0);
+    CAN2_0x1FF_TX(0,(pitch_inner_pid.out), 0, 0);
 }
 
 void CAN1_super()

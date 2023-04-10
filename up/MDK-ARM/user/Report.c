@@ -21,7 +21,7 @@ void report_SendData(float data1,float data2,float data3,float data4,float data5
 		vofa_data[4].value = data5;
 
 		int h,m;
-		HAL_UART_Transmit(&huart3,(uint8_t *)&tail_4,1,0x10);
+		//HAL_UART_Transmit(&huart3,(uint8_t *)&tail_4,1,0x10);
 		for(h = 0; h < 5; h++ )
 		{
 			for(m = 0; m < 4; m++ )
@@ -33,5 +33,5 @@ void report_SendData(float data1,float data2,float data3,float data4,float data5
 		HAL_UART_Transmit(&huart3,(uint8_t *)&tail_3,1,0x10);
 		HAL_UART_Transmit(&huart3,(uint8_t *)&tail,1,0x10);
 		HAL_UART_Transmit(&huart3,(uint8_t *)&tail_2,1,0x10);
-		HAL_UART_Transmit(&huart3,(uint8_t *)&tail_5,1,0x10);
+		//HAL_UART_Transmit(&huart5,(uint8_t *)&tail_5,1,0x10);
 };

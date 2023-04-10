@@ -39,6 +39,7 @@ extern uint8_t referee_Buf[150];
 uint16_t UART4_Data_Len = 0;
 uint8_t UART4_Flag=0;
 uint8_t UART4_Rx_temp[2][REFFER_REC_LENGTH] = {0};
+uint8_t Vision_Data_Receive[12];
 
 
 /* USER CODE END 0 */
@@ -551,7 +552,7 @@ void  HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 	if(huart->Instance==RC_USART)
 	{
 		RemoteDataProcess(sbus_rx_buffer[0]);
-    //记录数据接收时间  对，你说得对
+    //记录数据接收时间
     DetectHook(DBUSTOE);
 		HAL_UART_Receive_DMA(&huart2,&sbus_rx_buffer[0][0],RC_FRAME_LENGTH);
 	}
@@ -559,7 +560,9 @@ void  HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 	if(huart->Instance==MPU_USART)
 	{
 		cnt10++;
+
 		Packet_Decode(MPU_data);
+		DetectHook(GYR);
 		HAL_UART_Receive_DMA(&huart5,&MPU_data,1);
 	}
 
@@ -568,17 +571,15 @@ void  HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 int cnt19=0;
 void UART_IDLECallBack(UART_HandleTypeDef *huart)
 {
-	/*
+	
   if(huart->Instance==Vision_USART)
 	{
     //cnt19++;
-    __HAL_UART_CLEAR_IDLEFLAG(&huart1);
-    HAL_UART_DMAStop(&huart1);
-    vision_handle();
-
-		HAL_UART_Receive_DMA(&huart1,UART1_Rx_Buf,6);
+		HAL_UART_DMAStop(&huart1);
+		Vision_decode(Vision_Data_Receive);
+		HAL_UART_Receive_DMA(&huart1, (uint8_t *)Vision_Data_Receive,12);
+	
 	}
-*/
 
   if(huart == &huart4)//裁判系统
 {

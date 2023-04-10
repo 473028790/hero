@@ -31,15 +31,17 @@ uint8_t buf[10];
 uint8_t g;
 #include "packet.h"
 #include "rc.h"
-#include "referee.h"
+#include "referee_task.h"
 #include "detect_task.h"
 #include "stm32f4xx_hal_dma.h"
 extern unsigned char sbus_rx_buffer[2][RC_FRAME_LENGTH];
 extern uint8_t referee_Buf[150];
+uint8_t Judge_Buffer[128];
 uint16_t UART4_Data_Len = 0;
 uint8_t UART4_Flag=0;
 uint8_t UART4_Rx_temp[2][REFFER_REC_LENGTH] = {0};
 
+ uint8_t judge_tag=0;
 
 /* USER CODE END 0 */
 
@@ -93,7 +95,7 @@ void MX_UART5_Init(void)
 
   /* USER CODE END UART5_Init 1 */
   huart5.Instance = UART5;
-  huart5.Init.BaudRate = 921600;
+  huart5.Init.BaudRate = 115200;
   huart5.Init.WordLength = UART_WORDLENGTH_8B;
   huart5.Init.StopBits = UART_STOPBITS_1;
   huart5.Init.Parity = UART_PARITY_NONE;
@@ -540,32 +542,17 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
 
 void Usart_Init_Report(void)
 {
-	__HAL_UART_ENABLE_IT(&huart4, UART_IT_IDLE);
-	HAL_UART_Receive_DMA(&huart4, (uint8_t*)UART4_Rx_temp[UART4_Flag], REFFER_REC_LENGTH); 
+	__HAL_UART_ENABLE_IT(&huart5, UART_IT_IDLE);
 };
 
 
 int cnt10=0;
 void  HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 { 
-	if(huart->Instance==RC_USART)
-	{
-		RemoteDataProcess(sbus_rx_buffer[0]);
-    //记录数据接收时间  对，你说得对
-    DetectHook(DBUSTOE);
-		HAL_UART_Receive_DMA(&huart2,&sbus_rx_buffer[0][0],RC_FRAME_LENGTH);
-	}
-
-	if(huart->Instance==MPU_USART)
-	{
-		cnt10++;
-		Packet_Decode(MPU_data);
-		HAL_UART_Receive_DMA(&huart5,&MPU_data,1);
-	}
-
 
 }
 int cnt19=0;
+int cnt199=0;
 void UART_IDLECallBack(UART_HandleTypeDef *huart)
 {
 	/*
@@ -580,22 +567,17 @@ void UART_IDLECallBack(UART_HandleTypeDef *huart)
 	}
 */
 
-  if(huart == &huart4)//裁判系统
-{
-	  cnt19++;
-    __HAL_UART_CLEAR_IDLEFLAG(&huart4);
-    /*your own code*/
-    HAL_UART_DMAStop(&huart4);  
-    UART4_Data_Len = REFFER_REC_LENGTH - __HAL_DMA_GET_COUNTER(&hdma_uart4_rx);
-//			for(uint8_t i=0;i<USART3_Data_Len;i++)
-//			{
-////				USART3_Rx_Buff[USART3_Flag][i]=USART3_Rx_temp[i];
-//				USART3_Rx_temp[i]=0;
-//			};
-  judge_rcdata(UART4_Rx_temp[UART4_Flag],UART4_Data_Len);
-  if(UART4_Flag)UART4_Flag=0;
-  else UART4_Flag=1;
-  HAL_UART_Receive_DMA(&huart4, (uint8_t*)UART4_Rx_temp[UART4_Flag], REFFER_REC_LENGTH);                         
-}
+if(huart == &huart5)
+	{
+	 if(RESET != __HAL_UART_GET_FLAG(huart, UART_FLAG_IDLE))  
+	 {
+		 cnt199++;
+		__HAL_UART_CLEAR_IDLEFLAG(huart);
+		HAL_UART_DMAStop(huart);  
+		judge_tag=1;
+		HAL_UART_Receive_DMA(huart,Judge_Buffer,128);
+	 }
+	}
+	
 }
 /* USER CODE END 1 */
