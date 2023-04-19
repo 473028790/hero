@@ -8,7 +8,7 @@
 #include "rc.h"
 extern KEY	KEY_Date;
 
-#define front_degree 1397.0f    //当yaw朝前的时候，yaw电机的ecd
+#define front_degree 7857.0f    //当yaw朝前的时候，yaw电机的ecd
 #define cheassis_follow_speed 200.00f
 
 #define cheassis_follow 0
@@ -71,6 +71,7 @@ float hudu_ch;
 float Is_con;
 float ecd_diff;
 int16_t Is_finishctog=1;
+float ctog_speed=1000.0f;
 void CtoG()
 {
 	ecd_diff=front_degree-gimbal_yaw_motor.ecd;								//参考机械角度与实际角度的差值
@@ -86,13 +87,23 @@ void CtoG()
 
 	if(Is_finishctog==0)      //底盘开始跟随，则进入调整
 	{
-		if(ecd_diff>=540) ecd_diff=540;         //跟随速度限幅
-		else if(ecd_diff <=-540) ecd_diff=-540;
+		if(ecd_diff>=540)   //跟随速度限幅
+		{
+			ecd_diff=540;
+			ctog_speed=3000.0f;
+		}
+		else if(ecd_diff<540||ecd_diff>0) ctog_speed=1000.0f;
+		else if(ecd_diff <=-540)
+		{
+			ecd_diff=-540;
+			ctog_speed=3000.0f;
+		}
+		else if(ecd_diff<0||ecd_diff>-540) ctog_speed=1000.0f;
 		
-		wheel_moter[0].target_speed+=(ecd_diff/cheassis_follow_speed)*1000.0f;
-		wheel_moter[1].target_speed+=(ecd_diff/cheassis_follow_speed)*1000.0f;
-		wheel_moter[2].target_speed+=(ecd_diff/cheassis_follow_speed)*1000.0f;
-		wheel_moter[3].target_speed+=(ecd_diff/cheassis_follow_speed)*1000.0f;
+		wheel_moter[0].target_speed+=(ecd_diff/cheassis_follow_speed)*ctog_speed;
+		wheel_moter[1].target_speed+=(ecd_diff/cheassis_follow_speed)*ctog_speed;
+		wheel_moter[2].target_speed+=(ecd_diff/cheassis_follow_speed)*ctog_speed;
+		wheel_moter[3].target_speed+=(ecd_diff/cheassis_follow_speed)*ctog_speed;
 	}
 }
 /*************************************小陀螺**************************************/	

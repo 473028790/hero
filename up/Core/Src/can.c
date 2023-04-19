@@ -258,7 +258,7 @@ void CAN1_Filterinit_And_Start(void)
 	can1_filter.FilterFIFOAssignment = 0;
 	can1_filter.FilterActivation = ENABLE;
 	can1_filter.SlaveStartFilterBank = 0;
-	HAL_CAN_ConfigFilter(&hcan1,&can1_filter);//锟斤拷始锟斤拷 CAN1 锟斤拷锟斤拷锟斤拷
+	HAL_CAN_ConfigFilter(&hcan1,&can1_filter);//锟斤拷始锟斤�? CAN1 锟斤拷锟斤拷锟斤�?
 	HAL_CAN_Start(&hcan1);//锟斤拷锟斤拷 CAN1
 	HAL_CAN_ActivateNotification(&hcan1,CAN_IT_RX_FIFO0_MSG_PENDING);//锟斤拷锟斤拷CAN1 FIFO0 锟斤拷锟斤拷
 }
@@ -474,7 +474,7 @@ void CAN1_0x478_TX(int16_t motor1,int16_t motor2,int16_t motor3,int16_t motor5,i
 	Data[5]=motor5;
 	Data[6]=motor6>>8;
 	Data[7]=motor6;
-	HAL_CAN_AddTxMessage(&hcan1,&tx,Data,(uint32_t *)CAN_TX_MAILBOX0);
+	HAL_CAN_AddTxMessage(&hcan2,&tx,Data,(uint32_t *)CAN_TX_MAILBOX0);
 }
 /*
 union
@@ -596,9 +596,10 @@ void yaw_CAN_TX(int16_t motor)
 */
 int cnt50=0;
   CAN_RxHeaderTypeDef CAN1_RX;
+extern int hero_shoot_number;
 void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 {
-  //CAN_RxHeaderTypeDef CAN1_RX;
+//  CAN_RxHeaderTypeDef CAN1_RX;
   CAN_RxHeaderTypeDef CAN2_Rx;
 
 	if(hcan->Instance==CAN1)     //CAN1
@@ -637,6 +638,11 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 			dial_data.angle=(float)((int16_t)(Data[0]<<8|Data[1]));
 			dial_motor.ActualSpeed=(float)((int16_t)(Data[2]<<8|Data[3]));
 			break;
+			
+//			case 0x331://dial
+//			hero_shoot_number=(float)((int16_t)Data[0]);
+//			break;
+			
     	case 0x666://supercap
         supercap.Bat_V=(float)((int16_t)(Data[0]<<8|Data[1]));
         supercap.power=(float)((int16_t)(Data[2]<<8|Data[3]));

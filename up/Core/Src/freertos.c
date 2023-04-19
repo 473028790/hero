@@ -67,8 +67,6 @@ osThreadId Gimbal__TaskHandle;
 osThreadId can__TaskHandle;
 osThreadId vofa__TaskHandle;
 osThreadId Detect__TaskHandle;
-osThreadId client_Handle;
-osThreadId super_capHandle;
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
@@ -80,8 +78,6 @@ void Gimbal_Task(void const * argument);
 void can_Task(void const * argument);
 void vofa_Task(void const * argument);
 void Detect_Task(void const * argument);
-void client(void const * argument);
-void super_cap_task(void const * argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
@@ -148,14 +144,6 @@ void MX_FREERTOS_Init(void) {
   osThreadDef(Detect__Task, Detect_Task, osPriorityBelowNormal, 0, 512);
   Detect__TaskHandle = osThreadCreate(osThread(Detect__Task), NULL);
 
-  /* definition and creation of client_ */
-  osThreadDef(client_, client, osPriorityLow, 0, 128);
-  client_Handle = osThreadCreate(osThread(client_), NULL);
-
-  /* definition and creation of super_cap */
-  osThreadDef(super_cap, super_cap_task, osPriorityIdle, 0, 128);
-  super_capHandle = osThreadCreate(osThread(super_cap), NULL);
-
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
   /* USER CODE END RTOS_THREADS */
@@ -194,6 +182,7 @@ void chassis_task(void const * argument)
 * @retval None
 */
 /* USER CODE END Header_Gimbal_Task */
+int cnt629=0;
 void Gimbal_Task(void const * argument)
 {
   /* USER CODE BEGIN Gimbal_Task */
@@ -203,6 +192,7 @@ void Gimbal_Task(void const * argument)
   /* Infinite loop */
   for(;;)
   {
+		cnt629++;
 		ReadRc_Gimbal();
 		Gimbal_PID();
 
@@ -248,18 +238,23 @@ void can_Task(void const * argument)
 * @param argument: Not used
 * @retval None
 */
+int cnt16=0;
+extern 	int16_t left_X;
+extern 	int16_t left_Y;
+extern RC_Ctl_t RC_CtrlData;
 /* USER CODE END Header_vofa_Task */
 void vofa_Task(void const * argument)
 {
   /* USER CODE BEGIN vofa_Task */
   static portTickType PreviousWakeTime1;
-	const portTickType TimeIncrement=pdMS_TO_TICKS(5);
+	const portTickType TimeIncrement=pdMS_TO_TICKS(2);
 	PreviousWakeTime1=xTaskGetTickCount();
   /* Infinite loop */
   for(;;)
   {
     //vision_Send();
-		report_SendData(Friction_motor[0].target_speed,Friction_motor[0].ActualSpeed,Friction_motor[1].target_speed,Friction_motor[1].ActualSpeed,0);
+		cnt16++;
+		report_SendData(RC_CtrlData.mouse.x,left_X,RC_CtrlData.mouse.x,left_Y,0);
 		vTaskDelayUntil(&PreviousWakeTime1,TimeIncrement);
   }
   /* USER CODE END vofa_Task */
@@ -291,51 +286,6 @@ void Detect_Task(void const * argument)
    		vTaskDelay(DETECT_TASK_INIT_TIME);
   }
   /* USER CODE END Detect_Task */
-}
-
-/* USER CODE BEGIN Header_client */
-/**
-* @brief Function implementing the client_ thread.
-* @param argument: Not used
-* @retval None
-*/
-/* USER CODE END Header_client */
-void client(void const * argument)
-{
-  /* USER CODE BEGIN client */
-  static portTickType PreviousWakeTime1;
-	const portTickType TimeIncrement=pdMS_TO_TICKS(100);
-	PreviousWakeTime1=xTaskGetTickCount();
-
-  /* Infinite loop */
-  for(;;)
-  {
-    //referee_task();
-	  vTaskDelayUntil(&PreviousWakeTime1,TimeIncrement);
-  }
-  /* USER CODE END client */
-}
-
-/* USER CODE BEGIN Header_super_cap_task */
-/**
-* @brief Function implementing the super_cap thread.
-* @param argument: Not used
-* @retval None
-*/
-/* USER CODE END Header_super_cap_task */
-void super_cap_task(void const * argument)
-{
-  /* USER CODE BEGIN super_cap_task */
-  static portTickType PreviousWakeTime1;
-	const portTickType TimeIncrement=pdMS_TO_TICKS(100);
-	PreviousWakeTime1=xTaskGetTickCount();
-  /* Infinite loop */
-  for(;;)
-  {
-		determine_super_target();
-		vTaskDelayUntil(&PreviousWakeTime1,TimeIncrement);
-  }
-  /* USER CODE END super_cap_task */
 }
 
 /* Private application code --------------------------------------------------*/
