@@ -158,7 +158,7 @@ bool is_red_or_blue(void)
 /**
   * @brief  判断自身ID，选择客户端ID
   * @param  void
-  * @retval RED   BLUE
+  * @retval void
   * @attention  数据打包,打包完成后通过串口发送到裁判系统
   */
 void determine_ID(void)
@@ -173,22 +173,17 @@ void determine_ID(void)
 		Judge_SelfClient_ID = 0x0100 + Judge_Self_ID;//计算客户端ID
 	}
 }
-
-
 /**
-  * @brief  判断当前等级来确定超电功率
+* @brief  判断自身热量是否可以继续发射
   * @param  int
-  * @retval 
-  * @attention  数据打包,打包完成后通过串口发送到超电
+  * @retval void
+  * @attention  
   */
- void determine_super_target(void)
- {
-	int super_target;
-	super_target=My_status.chassis_power_limit-2;
-	CAN1_0x333_TX(super_target);
- }
-
-
+int shoot_number(void)
+{
+	static int number=0;
+	number=(My_status.shooter_id1_42mm_cooling_limit-power.shooter_id1_42mm_cooling_heat)/100;
+}
 #define send_max_len     113
 uint8_t CliendTxBuffer[send_max_len];
  

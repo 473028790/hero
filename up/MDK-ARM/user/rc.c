@@ -239,16 +239,15 @@ void RemoteDataProcess(uint8_t *pData)
 	KEY_Date.Ctrl=((KEY_Date.Ctrl)>>15);
 
 
-    //CAN1_0x748_TX(RC_CtrlData.rc.s1,RC_CtrlData.rc.s2,0,RC_CtrlData.key.v,RC_CtrlData.rc.ch0,RC_CtrlData.rc.ch1);
 	CAN1_0x748_TX(RC_CtrlData.rc.s1,RC_CtrlData.rc.s2,RC_CtrlData.mouse.press_l,infra_red_GPIO,RC_CtrlData.rc.ch0,RC_CtrlData.rc.ch1);
 	CAN1_0x478_TX(RC_CtrlData.mouse.press_r,RC_CtrlData.key.v,RC_CtrlData.mouse.x,RC_CtrlData.rc.ch2,RC_CtrlData.rc.ch3);
 }
 void RC_restart(uint16_t dma_buf_num)
 {
-	
+	/*
 	__set_FAULTMASK(1);
 	NVIC_SystemReset();
-	
+	*/
 }
 
 
@@ -439,10 +438,13 @@ void ReadRc_Chassis(void)
 	}	
 
 }
-void ReadRc_Gimbal(void)
-{
 	int16_t left_X;
 	int16_t left_Y;
+float x1=200,x2=300;
+void ReadRc_Gimbal(void)
+{
+//	int16_t left_X;
+//	int16_t left_Y;
 
 	if(STOP==1)
 	{
@@ -495,8 +497,8 @@ void ReadRc_Gimbal(void)
 		//mouse
 		kalman mouse_x;
 		kalman mouse_y;
-		kalmanCreate(&mouse_x,100,300);
-		kalmanCreate(&mouse_y,200,300);
+		kalmanCreate(&mouse_x,60000,40000);
+		kalmanCreate(&mouse_y,2000,3000);
 		left_X = KalmanFilter(&mouse_x,RC_CtrlData.mouse.x); 
 		left_Y = KalmanFilter(&mouse_y,RC_CtrlData.mouse.y); 
 
@@ -517,7 +519,7 @@ int dial_number2=0;
 int dial_sign1=0;
 int dial_sign=0;
 int dial_back_sign=0;
-int shoot_number=0;
+int hero_shoot_number=0;
 int infra_red_GPIO=3;
 int infra_red_MODE=0;
 int dial_red_sign=3;
@@ -548,26 +550,33 @@ void ReadRc_dial(void)
 			}
 		}
 
+
 		if(STOP==2)
 		{
-			//shoot_number=determine_shoot();
-			//if(RC_CtrlData.mouse.press_l==1 && shoot_number!=0)
-			if(RC_CtrlData.mouse.press_l==1)
-			{
-				dial_sign=1;
-			}
-			if(dial_sign==1)
-			{
-				dial_number1++;
-				if(dial_number1==1)
+//			if(hero_shoot_number>0)
+//			{
+				if(RC_CtrlData.mouse.press_l==1)
 				{
-					get_moto_offset(&dial_data);
+					dial_sign=1;
 				}
-				if(dial_number1>3) dial_number1=3;
+//			}
+				if(dial_sign==1)
+				{
+					dial_number1++;
+					if(dial_number1==1)
+					{
+						get_moto_offset(&dial_data);
+					}
+					if(dial_number1>3) dial_number1=3;
 
-				get_total_angle(&dial_data);
-
-			}
+					get_total_angle(&dial_data);
+				}
+//			}
+//			else dial_sign=0;
+//			if(RC_CtrlData.mouse.press_l==1)
+//			{
+//				dial_sign=1;
+//			}
 			
 			
 			

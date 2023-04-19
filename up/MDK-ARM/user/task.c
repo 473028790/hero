@@ -100,6 +100,10 @@ void CAN1_send()                    //CAN1
 	if(dial_mode==infantry) CAN1_0x1FF_TX(-(yaw_inner_pid.out), 0, dial_motor.out, 0);
 	else if(dial_mode==hero) CAN1_0x1FF_TX(-(yaw_inner_pid.out), 0, dial_inner_pid.out, 0);
 	
+	/*
+	if(dial_mode==infantry) CAN1_0x1FF_TX(-(yaw_inner_pid.out), 0, 0, 0);
+	else if(dial_mode==hero) CAN1_0x1FF_TX(-(yaw_inner_pid.out), 0, 0, 0);
+	*/
 	
 	
     //CAN1_0x1FF_TX(yaw_inner_pid.out, 0, dial_inner_pid.out, 0);
@@ -113,7 +117,7 @@ void CAN1_send()                    //CAN1
 void CAN2_send()                    //CAN2
 {
     
-   //CAN2_0x200_TX(Friction_motor[0].out,Friction_motor[1].out, 0, 0);
+   CAN2_0x200_TX(Friction_motor[0].out,Friction_motor[1].out, 0, 0);
 
 	
     //测试left摩擦轮用

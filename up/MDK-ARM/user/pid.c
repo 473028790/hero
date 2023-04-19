@@ -154,7 +154,7 @@ void gimbal_yaw_inner_pid_init()             //yaw轴内环PID初始化
    yaw_inner_pid.ActualSpeed=0.0;
 
    yaw_inner_pid.kp=260.0;
-   yaw_inner_pid.ki=2.3;
+   yaw_inner_pid.ki=2.57;
    yaw_inner_pid.kd=0;
    yaw_inner_pid.integral=0;
 
@@ -173,7 +173,7 @@ void gimbal_pitch_outer_pid_init()             //pitch轴外环PID初始化
    pitch_outer_pid.target=0.0;
    pitch_outer_pid.ActualSpeed=0.0;
 
-   pitch_outer_pid.kp=10.0;
+   pitch_outer_pid.kp=18.4;
    pitch_outer_pid.ki=0;
    pitch_outer_pid.kd=0;
    pitch_outer_pid.integral=0;
@@ -190,7 +190,7 @@ void gimbal_pitch_inner_pid_init()             //pitch轴内环PID初始化
    pitch_inner_pid.ActualSpeed=0.0;
 
    pitch_inner_pid.kp=130;
-   pitch_inner_pid.ki=0.8;
+   pitch_inner_pid.ki=1.2;
    pitch_inner_pid.kd=0;
    pitch_inner_pid.integral=0;
 
@@ -221,7 +221,7 @@ void dial_inner_pid_init()             //拨盘内环PID初始化
    dial_inner_pid.ActualSpeed=0.0;
 
    dial_inner_pid.kp=15.0;
-   dial_inner_pid.ki=0.30;
+   dial_inner_pid.ki=0.40;
    dial_inner_pid.kd=0;
    dial_inner_pid.integral=0;
    dial_inner_pid.out=0;
@@ -297,8 +297,8 @@ void Gimbal_PID()           //云台PID运算
 	}
 	else if(GYR_first>5) GYR_first=6;
 	
-   if(pitch_outer_pid.target>=25.0f+Degree_po) pitch_outer_pid.target=25.0f+Degree_po;         //俯仰角限幅
-   else if(pitch_outer_pid.target<=-14.0f+Degree_po) pitch_outer_pid.target=-14.0f+Degree_po;
+   if(pitch_outer_pid.target>=24.0f+Degree_po) pitch_outer_pid.target=24.0f+Degree_po;         //俯仰角限幅
+   else if(pitch_outer_pid.target<=-18.0f+Degree_po) pitch_outer_pid.target=-18.0f+Degree_po;
 
    //yaw轴的串级PID
 
@@ -415,7 +415,7 @@ void dial_PID()             //拨盘PID运算
 		
 		if(STOP==1)
 		{
-         if(fabs(dial_outer_pid.ActualSpeed-dial_outer_pid.target)<5)     //确定结束后，运行结束程序
+         if(fabs(dial_outer_pid.ActualSpeed-dial_outer_pid.target)<15)     //确定结束后，运行结束程序
          {
 				dial_data.total_angle=0;
 				dial_data.angle_first=0;
@@ -426,7 +426,7 @@ void dial_PID()             //拨盘PID运算
 		}
 		else if(STOP==2)
 		{
-         if(fabs(dial_outer_pid.ActualSpeed-dial_outer_pid.target)<10)     //确定结束后，运行结束程序
+         if(fabs(dial_outer_pid.ActualSpeed-dial_outer_pid.target)<15)     //确定结束后，运行结束程序
          {
             dial_sign=0;
             dial_back_sign=0;
