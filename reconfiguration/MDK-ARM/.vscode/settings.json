@@ -1,0 +1,18 @@
+{
+    "files.associations": {
+        "main.h": "c",
+        "cmsis_version.h": "c",
+        "variable_config.h": "c",
+        "rc.h": "c",
+        "kalman.h": "c",
+        "pid.h": "c",
+        "gimbal.h": "c",
+        "imu_data_decode.h": "c",
+        "report.h": "c",
+        "can_transfer.h": "c",
+        "can.h": "c",
+        "cmsis_os.h": "c",
+        "shoot.h": "c",
+        "ranging.h": "c"
+    }
+}
