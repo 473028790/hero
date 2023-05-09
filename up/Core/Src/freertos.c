@@ -26,7 +26,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "rc.h"
-#include "task.h"
+#include "offline.h"
 #include "pid.h"
 #include "can.h"
 #include "vision.h"
@@ -34,6 +34,7 @@
 #include "referee.h"
 #include "detect_task.h"
 #include "chassis_mode.h"
+#include "Ranging.h"
 
 extern void Chassis_PID(void);
 extern void Gimbal_PID(void);
@@ -62,7 +63,7 @@ extern int infra_red_MODE;
 /* USER CODE BEGIN Variables */
 
 /* USER CODE END Variables */
-osThreadId chassis__taskHandle;
+osThreadId led__taskHandle;
 osThreadId Gimbal__TaskHandle;
 osThreadId can__TaskHandle;
 osThreadId vofa__TaskHandle;
@@ -73,7 +74,7 @@ osThreadId Detect__TaskHandle;
 
 /* USER CODE END FunctionPrototypes */
 
-void chassis_task(void const * argument);
+void led_task(void const * argument);
 void Gimbal_Task(void const * argument);
 void can_Task(void const * argument);
 void vofa_Task(void const * argument);
@@ -124,9 +125,9 @@ void MX_FREERTOS_Init(void) {
   /* USER CODE END RTOS_QUEUES */
 
   /* Create the thread(s) */
-  /* definition and creation of chassis__task */
-  osThreadDef(chassis__task, chassis_task, osPriorityNormal, 0, 512);
-  chassis__taskHandle = osThreadCreate(osThread(chassis__task), NULL);
+  /* definition and creation of led__task */
+  osThreadDef(led__task, led_task, osPriorityNormal, 0, 128);
+  led__taskHandle = osThreadCreate(osThread(led__task), NULL);
 
   /* definition and creation of Gimbal__Task */
   osThreadDef(Gimbal__Task, Gimbal_Task, osPriorityBelowNormal, 0, 512);
@@ -150,29 +151,22 @@ void MX_FREERTOS_Init(void) {
 
 }
 
-/* USER CODE BEGIN Header_chassis_task */
+/* USER CODE BEGIN Header_led_task */
 /**
-  * @brief  Function implementing the chassis__task thread.
+  * @brief  Function implementing the led__task thread.
   * @param  argument: Not used
   * @retval None
   */
-/* USER CODE END Header_chassis_task */
-void chassis_task(void const * argument)
+/* USER CODE END Header_led_task */
+void led_task(void const * argument)
 {
-  /* USER CODE BEGIN chassis_task */
-	static portTickType PreviousWakeTime1;
-	const portTickType TimeIncrement=pdMS_TO_TICKS(2);
-	PreviousWakeTime1=xTaskGetTickCount();
-	
+  /* USER CODE BEGIN led_task */
   /* Infinite loop */
   for(;;)
   {
-		ReadRc_Chassis();
-		Function_Choose();
-		Chassis_PID();
-   	vTaskDelayUntil(&PreviousWakeTime1,TimeIncrement);
+    osDelay(1);
   }
-  /* USER CODE END chassis_task */
+  /* USER CODE END led_task */
 }
 
 /* USER CODE BEGIN Header_Gimbal_Task */
@@ -181,8 +175,9 @@ void chassis_task(void const * argument)
 * @param argument: Not used
 * @retval None
 */
-/* USER CODE END Header_Gimbal_Task */
+extern L1_DATA_T L1_Data;
 int cnt629=0;
+/* USER CODE END Header_Gimbal_Task */
 void Gimbal_Task(void const * argument)
 {
   /* USER CODE BEGIN Gimbal_Task */
@@ -193,15 +188,15 @@ void Gimbal_Task(void const * argument)
   for(;;)
   {
 		cnt629++;
+		distance_test();
+		//distance_test();
 		ReadRc_Gimbal();
 		Gimbal_PID();
-
 		Friction_PID();
 
 		ReadRc_dial();
 		dial_PID();
 
-		Offline_task(); 
 
 	  vTaskDelayUntil(&PreviousWakeTime1,TimeIncrement);
   }
@@ -214,6 +209,8 @@ void Gimbal_Task(void const * argument)
 * @param argument: Not used
 * @retval None
 */
+extern KEY	KEY_Date;
+int chasses_pcb_rst=0;
 /* USER CODE END Header_can_Task */
 void can_Task(void const * argument)
 {
@@ -224,7 +221,9 @@ void can_Task(void const * argument)
   /* Infinite loop */
   for(;;)
   {
-		Offline_task();  			
+		Offline_task();
+		if(KEY_Date.Ctrl==1) chasses_pcb_rst=1;
+		else if (KEY_Date.Ctrl==0) chasses_pcb_rst=0;
 	  CAN1_send();
 	  CAN2_send();
 		vTaskDelayUntil(&PreviousWakeTime1,TimeIncrement);
@@ -242,6 +241,11 @@ int cnt16=0;
 extern 	int16_t left_X;
 extern 	int16_t left_Y;
 extern RC_Ctl_t RC_CtrlData;
+extern uint8_t ranging_flag;
+extern uint8_t ranging_rc_buffer[8];
+uint32_t ranging_distance;
+double ranging_x;
+int L1_Distance;
 /* USER CODE END Header_vofa_Task */
 void vofa_Task(void const * argument)
 {
@@ -252,9 +256,21 @@ void vofa_Task(void const * argument)
   /* Infinite loop */
   for(;;)
   {
-    //vision_Send();
+		if(ranging_flag==1)
+		{
+			 if(ranging_rc_buffer[2]==4)
+			{
+				for(int i=3;i<=6;i++)
+				{
+					ranging_distance=((ranging_distance << 8) | ranging_rc_buffer[i]);
+				}
+				ranging_x=ranging_distance;
+			}
+			ranging_flag=0;
+		}
+		
 		cnt16++;
-		report_SendData(RC_CtrlData.mouse.x,left_X,RC_CtrlData.mouse.x,left_Y,0);
+		//report_SendData(RC_CtrlData.mouse.x,left_X,RC_CtrlData.mouse.x,left_Y,0);
 		vTaskDelayUntil(&PreviousWakeTime1,TimeIncrement);
   }
   /* USER CODE END vofa_Task */

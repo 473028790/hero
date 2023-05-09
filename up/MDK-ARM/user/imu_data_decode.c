@@ -108,3 +108,4 @@ int imu_data_decode_init(void)
     Packet_DecodeInit(&RxPkt, OnDataReceived);
     return 0;
 }
+

@@ -9,7 +9,8 @@ new\chassis_mode.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/portable.
 new\chassis_mode.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/deprecated_definitions.h
 new\chassis_mode.o: ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F/portmacro.h
 new\chassis_mode.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/mpu_wrappers.h
-new\chassis_mode.o: user\task.h
+new\chassis_mode.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/task.h
+new\chassis_mode.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/list.h
 new\chassis_mode.o: ../Core/Inc/main.h
 new\chassis_mode.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h
 new\chassis_mode.o: ../Core/Inc/stm32f4xx_hal_conf.h
@@ -36,6 +37,7 @@ new\chassis_mode.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_can.h
 new\chassis_mode.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_flash.h
 new\chassis_mode.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_flash_ex.h
 new\chassis_mode.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_flash_ramfunc.h
+new\chassis_mode.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_iwdg.h
 new\chassis_mode.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr.h
 new\chassis_mode.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr_ex.h
 new\chassis_mode.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h
@@ -46,8 +48,6 @@ new\chassis_mode.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
 new\chassis_mode.o: ../Core/Inc/can.h
 new\chassis_mode.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h
 new\chassis_mode.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/timers.h
-new\chassis_mode.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/task.h
-new\chassis_mode.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/list.h
 new\chassis_mode.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/queue.h
 new\chassis_mode.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/semphr.h
 new\chassis_mode.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/event_groups.h

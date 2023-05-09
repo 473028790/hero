@@ -28,6 +28,7 @@ new\can.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_can.h
 new\can.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_flash.h
 new\can.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_flash_ex.h
 new\can.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_flash_ramfunc.h
+new\can.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_iwdg.h
 new\can.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr.h
 new\can.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr_ex.h
 new\can.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h
@@ -36,3 +37,8 @@ new\can.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h
 new\can.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
 new\can.o: ./user/pid.h
 new\can.o: ./user/rc.h
+new\can.o: ./user/detect_task.h
+new\can.o: ./user/imu_data_decode.h
+new\can.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+new\can.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+new\can.o: ./user/packet.h

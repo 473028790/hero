@@ -177,7 +177,7 @@ void CAN1_0x1FF_TX(int16_t motor1, int16_t motor2, int16_t motor3, int16_t motor
 void CAN1_0x200_TX(int16_t motor1, int16_t motor2, int16_t motor3, int16_t motor4);
 void CAN1_0x748_TX(int16_t motor1,int16_t motor2,int16_t motor3,int16_t motor4,int16_t motor5,int16_t motor6);
 void CAN1_0x478_TX(int16_t motor1,int16_t motor2,int16_t motor3,int16_t motor5,int16_t motor6);
-
+void CAN1_0x642_TX(int16_t motor1,int16_t motor2,int16_t motor3,int16_t motor5,int16_t motor6);
 //void CAN1_0x600_TX(uint8_t *pData);
 /* USER CODE END Prototypes */
 

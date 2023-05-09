@@ -58,6 +58,8 @@ int16_t R_X;
 #define RC_CHANNAL_ERROR_VALUE 8000
 
 #define GYR_ERROR_VALUE 1000
+#define Friction_ERROR_VALUE 10000
+
 static int16_t RC_abs(int16_t value);
 
 unsigned char sbus_rx_buffer[2][RC_FRAME_LENGTH]; //double sbus rx buffer to save data
@@ -125,6 +127,23 @@ uint8_t GYR_data_is_error(void)
 		store[1]=0;
     return 1;
 }
+uint8_t Friction_data_is_errorv(void)
+{
+    if (Friction_motor[0].ActualSpeed>Friction_ERROR_VALUE)
+    {
+        goto error;
+    }
+    if (Friction_motor[1].ActualSpeed>Friction_ERROR_VALUE)
+    {
+        goto error;
+    }
+    return 0;
+		
+	error:
+
+    return 1;
+}
+
 void RC_data_init(void)
 {
     RC_CtrlData.rc.ch0 = 0;
@@ -152,7 +171,11 @@ void slove_data_error(void)
 {
     RC_restart(SBUS_RX_BUF_NUM);
 }
-
+int FRI_slove_sign=0;
+void slove_FRI_lost(void)
+{
+    FRI_slove_sign=1;
+}
 //abs
 static int16_t RC_abs(int16_t value)
 {
@@ -239,7 +262,7 @@ void RemoteDataProcess(uint8_t *pData)
 	KEY_Date.Ctrl=((KEY_Date.Ctrl)>>15);
 
 
-	CAN1_0x748_TX(RC_CtrlData.rc.s1,RC_CtrlData.rc.s2,RC_CtrlData.mouse.press_l,infra_red_GPIO,RC_CtrlData.rc.ch0,RC_CtrlData.rc.ch1);
+	CAN1_0x748_TX(RC_CtrlData.rc.s1,RC_CtrlData.rc.s2,RC_CtrlData.mouse.press_l,FRI_slove_sign,RC_CtrlData.rc.ch0,RC_CtrlData.rc.ch1);
 	CAN1_0x478_TX(RC_CtrlData.mouse.press_r,RC_CtrlData.key.v,RC_CtrlData.mouse.x,RC_CtrlData.rc.ch2,RC_CtrlData.rc.ch3);
 }
 void RC_restart(uint16_t dma_buf_num)
@@ -248,6 +271,7 @@ void RC_restart(uint16_t dma_buf_num)
 	__set_FAULTMASK(1);
 	NVIC_SystemReset();
 	*/
+	
 }
 
 
@@ -441,6 +465,12 @@ void ReadRc_Chassis(void)
 	int16_t left_X;
 	int16_t left_Y;
 float x1=200,x2=300;
+uint8_t ranging_com_flag=0;
+extern uint8_t ranging_flag;
+float Compensation_angle;
+extern double ranging_x;
+uint8_t ranging_finish_flag=0;
+float ranging_yaw=0;
 void ReadRc_Gimbal(void)
 {
 //	int16_t left_X;
@@ -510,7 +540,27 @@ void ReadRc_Gimbal(void)
 		pitch_outer_pid.target+=(degree_k*(-left_Y));
 		if(yaw_outer_pid.target>179.9f)   yaw_outer_pid.target-=360.0f;
 		else if (yaw_outer_pid.target<-179.9f)  yaw_outer_pid.target+=360.0f;	
+			if(RC_CtrlData.mouse.press_r==1 && pitch_outer_pid.target!=Compensation_angle)
+			{
+				ranging_com_flag=1;
+			}
+			if(ranging_com_flag==1)
+			{
+				if(ranging_flag==1)
+				{
+					ranging_finish_flag++;
+					ranging_yaw=yaw_outer_pid.target;
+					Compensation_angle=(0.26f * ((ranging_x/1000.0f)*(ranging_x/1000.0f)) - 0.77f * (ranging_x/1000.0f) + 5.63f)+pitch_outer_pid.target;
+					if(ranging_finish_flag==1)
+					{
+						pitch_outer_pid.target=Compensation_angle;
+						yaw_outer_pid.target=ranging_yaw-1.0f;
+						ranging_com_flag=0;
+						ranging_finish_flag=0;
+					}
+				}
 
+			}
 	}
 }
 int dial_number=0;
@@ -581,22 +631,22 @@ void ReadRc_dial(void)
 			
 			
 			
-			if(RC_CtrlData.mouse.press_r==1)
-			{
-				dial_back_sign=1;
-			}
-			if(dial_back_sign==1)
-			{
-				dial_number2++;
-				if(dial_number2==1)
-				{
-					get_back_offset(&dial_data);
-				}
-				if(dial_number2>3) dial_number2=3;
+//			if(RC_CtrlData.mouse.press_r==1)
+//			{
+//				dial_back_sign=1;
+//			}
+//			if(dial_back_sign==1)
+//			{
+//				dial_number2++;
+//				if(dial_number2==1)
+//				{
+//					get_back_offset(&dial_data);
+//				}
+//				if(dial_number2>3) dial_number2=3;
 
-				get_total_angle(&dial_data);
+//				get_total_angle(&dial_data);
 
-			}
+//			}
 			
 			
 			

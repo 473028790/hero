@@ -27,6 +27,7 @@ new\main.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_can.h
 new\main.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_flash.h
 new\main.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_flash_ex.h
 new\main.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_flash_ramfunc.h
+new\main.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_iwdg.h
 new\main.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr.h
 new\main.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr_ex.h
 new\main.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h
@@ -41,15 +42,15 @@ new\main.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/portable.h
 new\main.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/deprecated_definitions.h
 new\main.o: ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F/portmacro.h
 new\main.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/mpu_wrappers.h
-new\main.o: ./user/task.h
-new\main.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/timers.h
 new\main.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/task.h
 new\main.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/list.h
+new\main.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/timers.h
 new\main.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/queue.h
 new\main.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/semphr.h
 new\main.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/event_groups.h
 new\main.o: ../Core/Inc/can.h
 new\main.o: ../Core/Inc/dma.h
+new\main.o: ../Core/Inc/iwdg.h
 new\main.o: ../Core/Inc/tim.h
 new\main.o: ../Core/Inc/usart.h
 new\main.o: ../Core/Inc/gpio.h

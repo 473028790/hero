@@ -23,7 +23,7 @@
 /* USER CODE BEGIN 0 */
 #include "pid.h"
 #include "rc.h"
-
+#include "detect_task.h"
 
 
 //void get_moto_offset(struct dial_data *ptr)
@@ -79,7 +79,7 @@ void MX_CAN1_Init(void)
   hcan1.Init.AutoWakeUp = ENABLE;
   hcan1.Init.AutoRetransmission = DISABLE;
   hcan1.Init.ReceiveFifoLocked = DISABLE;
-  hcan1.Init.TransmitFifoPriority = DISABLE;
+  hcan1.Init.TransmitFifoPriority = ENABLE;
   if (HAL_CAN_Init(&hcan1) != HAL_OK)
   {
     Error_Handler();
@@ -111,7 +111,7 @@ void MX_CAN2_Init(void)
   hcan2.Init.AutoWakeUp = ENABLE;
   hcan2.Init.AutoRetransmission = ENABLE;
   hcan2.Init.ReceiveFifoLocked = DISABLE;
-  hcan2.Init.TransmitFifoPriority = DISABLE;
+  hcan2.Init.TransmitFifoPriority = ENABLE;
   if (HAL_CAN_Init(&hcan2) != HAL_OK)
   {
     Error_Handler();
@@ -474,7 +474,28 @@ void CAN1_0x478_TX(int16_t motor1,int16_t motor2,int16_t motor3,int16_t motor5,i
 	Data[5]=motor5;
 	Data[6]=motor6>>8;
 	Data[7]=motor6;
-	HAL_CAN_AddTxMessage(&hcan2,&tx,Data,(uint32_t *)CAN_TX_MAILBOX0);
+	HAL_CAN_AddTxMessage(&hcan1,&tx,Data,(uint32_t *)CAN_TX_MAILBOX0);
+}
+void CAN1_0x642_TX(int16_t motor1,int16_t motor2,int16_t motor3,int16_t motor5,int16_t motor6)
+{
+	CAN_TxHeaderTypeDef tx;
+
+	tx.StdId = 0x642;
+	tx.RTR = CAN_RTR_DATA;
+	tx.IDE = CAN_ID_STD;
+	tx.DLC = 8;
+
+	static uint8_t Data[8];
+	Data[0]=motor1;
+	Data[1]=motor2;
+	Data[2]=motor3>>8;
+	Data[3]=motor3;
+
+	Data[4]=motor5>>8;
+	Data[5]=motor5;
+	Data[6]=motor6>>8;
+	Data[7]=motor6;
+	HAL_CAN_AddTxMessage(&hcan1,&tx,Data,(uint32_t *)CAN_TX_MAILBOX0);
 }
 /*
 union
@@ -597,6 +618,7 @@ void yaw_CAN_TX(int16_t motor)
 int cnt50=0;
   CAN_RxHeaderTypeDef CAN1_RX;
 extern int hero_shoot_number;
+extern int FRI_slove_sign;
 void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 {
 //  CAN_RxHeaderTypeDef CAN1_RX;
@@ -671,6 +693,9 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 			break;
 			case 0x201:
       get_motor_measure(&motor_friction[0], Data);
+			motor_friction[0].ecd=(float)((int16_t)(Data[0] << 8 | Data[1]));
+			FRI_slove_sign=0;
+			DetectHook(FRIction);
 			Friction_motor[0].ActualSpeed=(float)((int16_t)(Data[2] << 8 | Data[3]));
       break;
 			case 0x202:

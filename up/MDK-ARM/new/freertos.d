@@ -8,7 +8,8 @@ new\freertos.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/portable.h
 new\freertos.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/deprecated_definitions.h
 new\freertos.o: ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F/portmacro.h
 new\freertos.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/mpu_wrappers.h
-new\freertos.o: ./user/task.h
+new\freertos.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/task.h
+new\freertos.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/list.h
 new\freertos.o: ../Core/Inc/main.h
 new\freertos.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h
 new\freertos.o: ../Core/Inc/stm32f4xx_hal_conf.h
@@ -35,6 +36,7 @@ new\freertos.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_can.h
 new\freertos.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_flash.h
 new\freertos.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_flash_ex.h
 new\freertos.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_flash_ramfunc.h
+new\freertos.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_iwdg.h
 new\freertos.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr.h
 new\freertos.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr_ex.h
 new\freertos.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h
@@ -43,12 +45,11 @@ new\freertos.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h
 new\freertos.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
 new\freertos.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h
 new\freertos.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/timers.h
-new\freertos.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/task.h
-new\freertos.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/list.h
 new\freertos.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/queue.h
 new\freertos.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/semphr.h
 new\freertos.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/event_groups.h
 new\freertos.o: ./user/rc.h
+new\freertos.o: ./user/offline.h
 new\freertos.o: ./user/pid.h
 new\freertos.o: ../Core/Inc/can.h
 new\freertos.o: ./user/vision.h
@@ -62,3 +63,7 @@ new\freertos.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 new\freertos.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 new\freertos.o: ./user/packet.h
 new\freertos.o: ./user/chassis_mode.h
+new\freertos.o: ./user/Ranging.h
+new\freertos.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
+new\freertos.o: ../Middlewares/ST/ARM/DSP/Inc/arm_math.h
+new\freertos.o: ../Drivers/CMSIS/Include/core_cm4.h

@@ -176,7 +176,7 @@ static void DetectInit(uint32_t time)
         {
             {30, 40, 15}, //SBUS
             {30, 40, 14},   //gyr
-            {2, 3, 13},   //pitch
+            {30, 40, 13},   //friction
             {3000, 3000, 12}, //Control_detection
             {10, 10, 11}, //motor1
             {10, 10, 10}, //motor2
@@ -204,13 +204,17 @@ static void DetectInit(uint32_t time)
         errorList[i].worktime = time;
     }
     errorList[DBUSTOE].dataIsErrorFun = RC_data_is_error;
-    errorList[DBUSTOE].solveLostFun = slove_RC_lost;
+    errorList[DBUSTOE].solveLostFun = NULL;
     errorList[DBUSTOE].solveDataErrorFun = 0;
 		
     errorList[GYR].dataIsErrorFun = GYR_data_is_error;
     errorList[GYR].solveLostFun = slove_RC_lost;
     errorList[GYR].solveDataErrorFun = 0;
 		
+	  errorList[FRIction].dataIsErrorFun = Friction_data_is_errorv;
+    errorList[FRIction].solveLostFun = slove_FRI_lost;
+    errorList[FRIction].solveDataErrorFun = 0;
+
 		
 #if GIMBAL_MOTOR_6020_CAN_LOSE_SLOVE
     errorList[YawGimbalMotorTOE].solveLostFun = GIMBAL_lose_slove;

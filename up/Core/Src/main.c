@@ -21,6 +21,7 @@
 #include "cmsis_os.h"
 #include "can.h"
 #include "dma.h"
+#include "iwdg.h"
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
@@ -54,6 +55,7 @@ extern void PID_init(void);
 extern uint8_t hi229_data;
 extern uint8_t MPU_data;
 extern uint8_t UART1_Rx_Buf[14];
+extern uint8_t ranging_rc_buffer[8];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -84,6 +86,8 @@ int main(void)
   /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
+
+	
   HAL_Init();
 
   /* USER CODE BEGIN Init */
@@ -108,6 +112,8 @@ int main(void)
   MX_USART3_UART_Init();
   MX_UART4_Init();
   MX_USART1_UART_Init();
+  MX_IWDG_Init();
+  MX_USART6_UART_Init();
   /* USER CODE BEGIN 2 */
 	CAN1_Filterinit_And_Start();
 	CAN2_Filterinit_And_Start();
@@ -115,9 +121,6 @@ int main(void)
   Usart_Init_Report();
   imu_data_decode_init();
 
-	CAN1_0x333_TX(48);
-	
-	
   HAL_TIM_PWM_Start(&htim8,TIM_CHANNEL_3);
   
 
@@ -131,7 +134,8 @@ int main(void)
   //__HAL_TIM_SET_COMPARE(&htim8,TIM_CHANNEL_3,100);
   
 	HAL_UART_Receive_DMA(&huart2,&sbus_rx_buffer[0][0],RC_FRAME_LENGTH);
-  HAL_UART_Receive_DMA(&huart4, (uint8_t*)UART4_Rx_temp[UART4_Flag], REFFER_REC_LENGTH);    
+	HAL_UART_Receive_DMA(&huart6,(uint8_t*)&ranging_rc_buffer[0],8u);
+	
   /* USER CODE END 2 */
 
   /* Call init function for freertos objects (in freertos.c) */
@@ -171,8 +175,9 @@ void SystemClock_Config(void)
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
   */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_LSI|RCC_OSCILLATORTYPE_HSE;
   RCC_OscInitStruct.HSEState = RCC_HSE_ON;
+  RCC_OscInitStruct.LSIState = RCC_LSI_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
   RCC_OscInitStruct.PLL.PLLM = 25;
