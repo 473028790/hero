@@ -1,0 +1,28 @@
+{
+    "files.associations": {
+        "main.h": "c",
+        "cmsis_version.h": "c",
+        "variable_config.h": "c",
+        "rc.h": "c",
+        "kalman.h": "c",
+        "pid.h": "c",
+        "gimbal.h": "c",
+        "imu_data_decode.h": "c",
+        "report.h": "c",
+        "can_transfer.h": "c",
+        "can.h": "c",
+        "cmsis_os.h": "c",
+        "shoot.h": "c",
+        "ranging.h": "c",
+        "usart.h": "c",
+        "string": "c",
+        "string_view": "c",
+        "hexprotocol.h": "c",
+        "laser_operation.h": "c",
+        "vofa.h": "c",
+        "packet.h": "c",
+        "cmath": "c",
+        "*.tcc": "c",
+        "cstdlib": "c"
+    }
+}
