@@ -23,7 +23,7 @@
 /* USER CODE BEGIN 0 */
 #include "pid.h"
 #include "rc.h"
-
+#define KEY_PRESSED_OFFSET_R ((uint32_t)0x0001<<8)
 
 
 //void get_moto_offset(struct dial_data *ptr)
@@ -550,6 +550,9 @@ extern int dial_red;
 int cnt50=0;
   CAN_RxHeaderTypeDef CAN2_Rx;
 CAN_RxHeaderTypeDef CAN1_RX;
+int FRI_slove_sign=0;
+int chasses_pcb_rst=0;
+uint16_t ranging_distance;
 void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 {
   //CAN_RxHeaderTypeDef CAN1_RX;
@@ -602,7 +605,6 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 	
 	if(hcan->Instance==CAN2)   //CAN2
 	{
-		static int press;
 		static uint8_t Data[8];
 		HAL_CAN_GetRxMessage(&hcan2,CAN_RX_FIFO0,&CAN2_Rx,Data);
 		
@@ -610,8 +612,6 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 		{
     	case 0x205://yaw
 				cnt500++;
-        get_gimbal_motor_measuer(&motor_yaw,&Data[8]);
-
         gimbal_yaw_motor.ecd=(float)((int16_t)(Data[0]<<8|Data[1]));
         /*
 				gimbal_yaw_motor.ActualSpeed=(float)((int16_t)(Data[2]<<8|Data[3]));
@@ -623,19 +623,22 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 			RC_CtrlData.rc.s1=(float)((int16_t)Data[0]);
 			RC_CtrlData.rc.s2=(float)((int16_t)Data[1]);
 			RC_CtrlData.mouse.press_l=(float)((int16_t)Data[2]);
-			infra_red_GPIO= (float)((int16_t)Data[3]);
+			FRI_slove_sign= (float)((int16_t)Data[3]);
 			RC_CtrlData.rc.ch0 =(float)((int16_t)(Data[4]<<8|Data[5]));
 			RC_CtrlData.rc.ch1 =(float)((int16_t)(Data[6]<<8|Data[7]));
       break;
 
 			case 0x478:
-			RC_CtrlData.mouse.press_r=(float)((int16_t)Data[0]);
-			RC_CtrlData.key.v=(float)((int16_t)Data[1]);
+			RC_CtrlData.key.v=(float)((int16_t)(Data[0]<<8|Data[1]));
 			RC_CtrlData.mouse.x =(float)((int16_t)(Data[2]<<8|Data[3]));
 			RC_CtrlData.rc.ch2 =(float)((int16_t)(Data[4]<<8|Data[5]));
 			RC_CtrlData.rc.ch3 =(float)((int16_t)(Data[6]<<8|Data[7]));
       break;
-
+			case 0x642:
+			chasses_pcb_rst=(float)((int16_t)Data[0]);
+			ranging_distance=((int16_t)(Data[1]<<8|Data[2]));
+			RC_CtrlData.mouse.press_r=(float)((int16_t)Data[3]);
+      break;
 
 			default: {break;}
 		}
@@ -663,7 +666,11 @@ void RC_can(void)
 	KEY_Date.Q=((RC_CtrlData.key.v)<<9);	
 	KEY_Date.Q=((KEY_Date.Q)>>15);
 	//E			???
-	KEY_Date.E=((RC_CtrlData.key.v)>>7);
+	KEY_Date.E=((RC_CtrlData.key.v)<<8);	
+	KEY_Date.E=((KEY_Date.E)>>15);
+	//R			????
+	KEY_Date.R=((RC_CtrlData.key.v & KEY_PRESSED_OFFSET_R) == KEY_PRESSED_OFFSET_R);
+	
 	
 	//Shift	 
 	KEY_Date.Shift=((RC_CtrlData.key.v)<<11);	
@@ -672,5 +679,11 @@ void RC_can(void)
 	KEY_Date.Ctrl=((RC_CtrlData.key.v)<<10);	
 	KEY_Date.Ctrl=((KEY_Date.Ctrl)>>15);
 
+
+	if(chasses_pcb_rst==1)
+	{
+//		__set_FAULTMASK(1);
+//		NVIC_SystemReset();
+	}
 }
 /* USER CODE END 1 */

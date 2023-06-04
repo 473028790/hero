@@ -204,7 +204,7 @@ static void DetectInit(uint32_t time)
         errorList[i].worktime = time;
     }
     errorList[DBUSTOE].dataIsErrorFun = RC_data_is_error;
-    errorList[DBUSTOE].solveLostFun = NULL;
+    errorList[DBUSTOE].solveLostFun = slove_RC_lost;
     errorList[DBUSTOE].solveDataErrorFun = 0;
 		
     errorList[GYR].dataIsErrorFun = GYR_data_is_error;

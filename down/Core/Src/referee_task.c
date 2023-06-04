@@ -13,6 +13,10 @@ char empty_line[20] = {"                    "};
 char super_cap1[2],super_cap2[2],percent_sign[2]={'%'},follow_mode[7]={"FOLLOW"},gyro_mode[5]={"GYRO"},aimbot_mode[12]={"AIMBOTMODE:"},
       aimbot_status_on[3]={"ON"},aimbot_status_off[4]={"OFF"}, continuouds_shoot[18]={"CONTINUOUDS_SHOOT"},single_shoot[13]={"SINGLE_SHOOT"};
 char shoot_number_char[2];
+char FRI_detect_char[3]={"FRI"};
+char ranging_distance_char1[2];
+char ranging_distance_char2[2];
+char ranging_distance_point[2]={'.'};
 /**************************×Ö·û´®¿ÓÖĞ¿Ó£ºÏñ°Ù·ÖºÅËüÖ»ÓĞ1¸ö£¬µ«ÊÇµÃÉèÖÃ2¸öÄÚ´æµÄÊı×é£¬ÆäËûµÄÒ²Ò»Ñù£¬ÒòÎªÊı×éÄ©Î²Ä¬ÈÏÓĞÒ»¸öÕ¼Î»·û ****************************/
 extern int Chassis_mode;
 extern int Shooting_mode;
@@ -30,6 +34,7 @@ extern UART_HandleTypeDef huart3;
 extern UART_HandleTypeDef huart6;
 extern UART_HandleTypeDef huart5;
 extern judge_info_t judge_infop;
+extern uint16_t ranging_distance;
 
 extern struct supercap supercap;
 /* Private functions ---------------------------------------------------------*/
@@ -53,11 +58,17 @@ void UI_Ctrl(void)
 	Client_Char_update();
 	Client_Line_update();
 }
-#define SUPERCAP_VOLTAGE_MAX 2150
+#define SUPERCAP_VOLTAGE_MAX 2330
 void Get_supercap_(void)
 {
 	super_cap1[0]=(((((uint16_t)supercap.cap_V)*100)/SUPERCAP_VOLTAGE_MAX)/10)+0x30;/*0x30ÊÇASCll±í¶ÔÓ¦µÄÊı×Ö0*/
   super_cap2 [0]=(((((uint16_t)supercap.cap_V)*100)/SUPERCAP_VOLTAGE_MAX)%10)+0x30;	
+}
+
+void Get_ranging_distance(void)
+{
+	ranging_distance_char1[0]=(((uint8_t)(ranging_distance/1000))%10)+0x30;/*0x30ÊÇASCll±í¶ÔÓ¦µÄÊı×Ö0*/
+  ranging_distance_char2 [0]=(((uint16_t)(ranging_distance%1000))/100)+0x30;
 }
 
 /**
@@ -95,10 +106,7 @@ void Char_Graphic(ext_client_string_t* graphic,//×îÖÕÒª·¢³öÈ¥µÄÊı×éÖĞµÄÊı¾İ¶ÎÄÚÈ
 /**
  *	@brief	×Ö·û´®³õÊ¼»¯
  */
-int ui_x_st=1020;
-int ui_y_st=450;
-int ui_x_end=890;
-int ui_y_end=450;
+
 extern int hero_shoot_number;
 static void Char_Init()
 {
@@ -149,8 +157,30 @@ static void Char_Init()
 	else if(UI_char.char_send_times==9){/*Ìí¼Ó ·¢ÉäÁ¿*/
 	shoot_number_char[0]=((uint16_t)hero_shoot_number)+0x30;
 		Char_Graphic(&tx_client_char.clientData,"CL7",MODIFY,0,GREEN,25,strlen(shoot_number_char),5,(1045),(450),shoot_number_char);
-	UI_char.char_send_times=0;
+	UI_char.char_send_times=10;
 	}
+	else if(UI_char.char_send_times==10){/*Ìí¼Ó ·¢Éä»ú¹¹µçµÄ×Ö·û´®*/
+		Char_Graphic(&tx_client_char.clientData,"CL8",ADD,0,YELLOW,25,strlen(FRI_detect_char),5,(1420),(1080*7/12),FRI_detect_char);
+	UI_char.char_send_times=11;
+	}
+	else if(UI_char.char_send_times==11){/*Ìí¼Ó ·¢Éä»ú¹¹µçµÄ×Ö·û´®*/
+		Char_Graphic(&tx_client_char.clientData,"CL9",ADD,0,GREEN,25,strlen(ranging_distance_char1),5,(1620),(1080*5/12),ranging_distance_char1);
+		UI_char.char_send_times=12;
+	}
+	else if(UI_char.char_send_times==12){/*Ìí¼Ó ·¢Éä»ú¹¹µçµÄ×Ö·û´®*/
+		Char_Graphic(&tx_client_char.clientData,"CL10",ADD,0,GREEN,25,strlen(ranging_distance_char2),5,(1620),(1080*6/12),ranging_distance_char2);
+		UI_char.char_send_times=13;
+	}
+	else if(UI_char.char_send_times==13){/*¸üĞÂ ³¬¼¶µçÈİÊ£ÓàÁ¿°Ù·ÖÊ®Î»*/
+	Get_ranging_distance();
+	Char_Graphic(&tx_client_char.clientData,"CL9",MODIFY,0,Cap_Color,25,strlen(ranging_distance_char1),5,(1690),(1080*6/12),ranging_distance_char1);
+	UI_char.char_send_times=14;
+	}
+	else if(UI_char.char_send_times==14){/*¸üĞÂ ³¬¼¶µçÈİÓàÁ¿°Ù·Ö¸öÎ»*/
+	Get_ranging_distance();
+	Char_Graphic(&tx_client_char.clientData,"CL10",MODIFY,0,Cap_Color,25,strlen(ranging_distance_char2),5,(1725),(1080*6/12),ranging_distance_char2);
+	UI_char.char_send_times=0;
+	} 
 }
 
 /**
@@ -222,17 +252,26 @@ void Line_Graphic(graphic_data_struct_t* graphic,//×îÖÕÒª·¢³öÈ¥µÄÊı×éµÄÊı¾İ¶ÎÄÚÈ
 static uint8_t line_send_times=0;
 float super_per;
 extern int chassis_mode;
+extern int FRI_slove_sign;
+
+int ui_x_st=1020;
+int ui_y_st=450;
+int ui_x_end=890;
+int ui_y_end=450;
+extern int Q_sign;
+extern int E_sign;
+extern uint8_t R_sign;
 static void Line_int()//ÏßĞÎ³õÊ¼»¯
 {  
 	//int super_per;
 	if(line_send_times==0){
-	Line_Graphic(&ext_line_one_data.Line_data_struct,"LI1",ADD,LINE,0,CYAN_BLUE,0,0,2,960,600,0,960,300);
+	Line_Graphic(&ext_line_one_data.Line_data_struct,"LI1",ADD,LINE,0,FUCHSIA,0,0,2,960-20,600,0,960-20,300);
 	line_send_times=1;
 	}
 	else if(line_send_times==1){
 	//Line_Graphic(&ext_line_one_data.Line_data_struct,"LI2",ADD,LINE,0,GREEN,0,0,6,ui_x_st,ui_y_st,0,ui_x_end,ui_y_end);
-		//4mÃé×¼Ïß
-	Line_Graphic(&ext_line_one_data.Line_data_struct,"LI2",ADD,LINE,0,CYAN_BLUE,0,0,2,1020,450,0,890,450);
+		//5mÃé×¼Ïß
+	Line_Graphic(&ext_line_one_data.Line_data_struct,"LI4",ADD,LINE,2,FUCHSIA,0,0,2,1020,395+10,0,890,395+10);
 	line_send_times=2;
 	}
 	else if(line_send_times==2){
@@ -305,20 +344,41 @@ static void Line_int()//ÏßĞÎ³õÊ¼»¯
 		}
 		if(chassis_mode==cheassis_follow)
 		{
-			Line_Graphic(&ext_line_one_data.Line_data_struct,"LI5",MODIFY,CIRCLE,0,GREEN,60,260,7,250,790+5,25,1354,610);
+			if(R_sign==1) Line_Graphic(&ext_line_one_data.Line_data_struct,"LI5",MODIFY,CIRCLE,0,WHITE,60,260,7,250,790+5,25,1354,610);
+			if(Q_sign==1) Line_Graphic(&ext_line_one_data.Line_data_struct,"LI5",MODIFY,CIRCLE,0,GREEN,60,260,7,250,790+5,25,1354,610);
 		}
 	line_send_times=10;
 	}
 	else if(line_send_times==10){
-	//Line_Graphic(&ext_line_one_data.Line_data_struct,"LI2",ADD,LINE,0,GREEN,0,0,6,ui_xui_y_st_st,ui_y_st,0,ui_x_end,ui_y_end);
-		//5mÃé×¼Ïß
-	Line_Graphic(&ext_line_one_data.Line_data_struct,"LI8",ADD,LINE,0,CYAN_BLUE,0,0,2,1020,420,0,890,420);
+		//6mÃé×¼Ïß
+	Line_Graphic(&ext_line_one_data.Line_data_struct,"LI1",ADD,LINE,2,ORANGE,0,0,2,1020,380+10,0,890,380+10);
 	line_send_times=11;
 	}
 	else if(line_send_times==11){
 	//Line_Graphic(&ext_line_one_data.Line_data_struct,"LI2",ADD,LINE,0,GREEN,0,0,6,ui_xui_y_st_st,ui_y_st,0,ui_x_end,ui_y_end);
-		//3mÃé×¼Ïß
-	Line_Graphic(&ext_line_one_data.Line_data_struct,"LI9",ADD,LINE,0,CYAN_BLUE,0,0,2,1020,480,0,890,480);
+		//7mÃé×¼Ïß
+	Line_Graphic(&ext_line_one_data.Line_data_struct,"LI9",ADD,LINE,0,FUCHSIA,0,0,2,1020,360+10,0,890,360+10);
+	line_send_times=12;
+	}
+	else if(line_send_times==12){
+			//Ä¦²ÁÂÖÉÏµç³õÊ¼»¯
+		Line_Graphic(&ext_line_one_data.Line_data_struct,"LI8",ADD,LINE,0,FUCHSIA,0,0,24,1550,642,1512,1550+200,642);
+	line_send_times=13;
+	}
+	
+	else if(line_send_times==13){
+		//Ä¦²ÁÂÖÉÏµç¸üĞÂ
+			if(FRI_slove_sign==1)		Line_Graphic(&ext_line_one_data.Line_data_struct,"LI8",MODIFY,LINE,0,FUCHSIA,0,0,24,1550,642,1512,1550+200,642);
+			else
+			{
+			Line_Graphic(&ext_line_one_data.Line_data_struct,"LI8",MODIFY,LINE,0,FUCHSIA,0,0,24,1550,642,1512,1550,642);
+			}		
+	line_send_times=14;
+	}
+	else if(line_send_times==14){
+	//Line_Graphic(&ext_line_one_data.Line_data_struct,"LI2",ADD,LINE,0,GREEN,0,0,6,ui_xui_y_st_st,ui_y_st,0,ui_x_end,ui_y_end);
+		//4mÃé×¼Ïß
+	Line_Graphic(&ext_line_one_data.Line_data_struct,"L5",ADD,LINE,2,FUCHSIA,0,0,2,1020,415+10,0,890,415+10);
 	line_send_times=0;
 	}
 }

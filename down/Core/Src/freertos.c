@@ -190,6 +190,8 @@ void chassis_task(void const * argument)
 * @retval None
 */
 /* USER CODE END Header_Gimbal_Task */
+int cnt26=0;
+extern float ecd_diff;
 void Gimbal_Task(void const * argument)
 {
   /* USER CODE BEGIN Gimbal_Task */
@@ -199,16 +201,8 @@ void Gimbal_Task(void const * argument)
   /* Infinite loop */
   for(;;)
   {
-    /*
-		ReadRc_Gimbal();
-		Gimbal_PID();
-    
-    Friction_PID();
-		*/
-    ReadRc_dial();
-    dial_PID();
-
-
+		cnt26++;
+		report_SendData(wheel_moter[0].ActualSpeed,wheel_moter[1].ActualSpeed,wheel_moter[2].target_speed,wheel_moter[2].ActualSpeed,wheel_moter[3].ActualSpeed);
 
     Offline_task(); 
 
@@ -262,7 +256,6 @@ void vofa_Task(void const * argument)
   for(;;)
   {
     //vision_Send();
-		report_SendData(wheel_moter[0].target_speed,wheel_moter[0].ActualSpeed,wheel_moter[1].ActualSpeed,wheel_moter[2].ActualSpeed,0);
 	  vTaskDelayUntil(&PreviousWakeTime1,TimeIncrement);
   }
   /* USER CODE END vofa_Task */
@@ -283,7 +276,7 @@ void client(void const * argument)
   for(;;)
   {
     UI_Ctrl();
-	  osDelayUntil(&previousWakeTime,5);
+	  osDelayUntil(&previousWakeTime,10);
   }
   /* USER CODE END client */
 }
@@ -299,6 +292,7 @@ extern int chassis_referee_mode;
 int cnt225=0;
 extern int Chassis_speed_proportion;
 extern int shoot_referee_mode;
+extern KEY	KEY_Date;
 /* USER CODE END Header_super_cap_task */
 void super_cap_task(void const * argument)
 {
@@ -317,18 +311,18 @@ void super_cap_task(void const * argument)
 			{
 					if(judge_infop.GameRobotStatus.robot_level==1)
 					{
-						ciecle_speed=3500;
-						Chassis_speed_proportion=4000;
+						ciecle_speed=2500;
+						Chassis_speed_proportion=2500;
 					}
 					else if(judge_infop.GameRobotStatus.robot_level==2)
 					{
-						ciecle_speed=4200;
-						Chassis_speed_proportion=5000;
+						ciecle_speed=3200;
+						Chassis_speed_proportion=3000;
 					}
 					else if(judge_infop.GameRobotStatus.robot_level==3)
 					{
-						ciecle_speed=5200;
-						Chassis_speed_proportion=6000;
+						ciecle_speed=4200;
+						Chassis_speed_proportion=3000;
 					}
 			}
 			break;
@@ -338,18 +332,18 @@ void super_cap_task(void const * argument)
 			{
 					if(judge_infop.GameRobotStatus.robot_level==1)
 					{
-						ciecle_speed=5000;
-						Chassis_speed_proportion=4000;
+						ciecle_speed=2000;
+						Chassis_speed_proportion=2000;
 					}
 					else if(judge_infop.GameRobotStatus.robot_level==2)
 					{
-						ciecle_speed=6200;
-						Chassis_speed_proportion=5000;
+						ciecle_speed=3200;
+						Chassis_speed_proportion=2500;
 					}
 					else if(judge_infop.GameRobotStatus.robot_level==3)
 					{
-						ciecle_speed=7200;
-						Chassis_speed_proportion=6000;
+						ciecle_speed=4200;
+						Chassis_speed_proportion=2500;
 					}
 			}
 			break;
@@ -359,6 +353,7 @@ void super_cap_task(void const * argument)
   }
   /* USER CODE END super_cap_task */
 }
+
 
 /* Private application code --------------------------------------------------*/
 /* USER CODE BEGIN Application */

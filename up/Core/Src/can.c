@@ -465,7 +465,7 @@ void CAN1_0x478_TX(int16_t motor1,int16_t motor2,int16_t motor3,int16_t motor5,i
 	tx.DLC = 8;
 
 	static uint8_t Data[8];
-	Data[0]=motor1;
+	Data[0]=motor2>>8;
 	Data[1]=motor2;
 	Data[2]=motor3>>8;
 	Data[3]=motor3;
@@ -487,8 +487,8 @@ void CAN1_0x642_TX(int16_t motor1,int16_t motor2,int16_t motor3,int16_t motor5,i
 
 	static uint8_t Data[8];
 	Data[0]=motor1;
-	Data[1]=motor2;
-	Data[2]=motor3>>8;
+	Data[1]=motor2>>8;
+	Data[2]=motor2;
 	Data[3]=motor3;
 
 	Data[4]=motor5>>8;

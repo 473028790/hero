@@ -63,9 +63,9 @@ void dial_pid_init()       //拨盘PID初始化
    dial_motor.target_speed=0.0;
    dial_motor.ActualSpeed=0.0;
 
-   dial_motor.kp=4.5;
-   dial_motor.ki=0.015;
-   dial_motor.kd=0.015;
+   dial_motor.kp=6;
+   dial_motor.ki=0.1;
+   dial_motor.kd=0;
 
    dial_motor.Pr_Error=0;
    dial_motor.thisError=0.0;
@@ -137,7 +137,7 @@ void gimbal_yaw_outer_pid_init()             //yaw轴外环PID初始化
    yaw_outer_pid.target=0.0;
    yaw_outer_pid.ActualSpeed=0.0;
 
-   yaw_outer_pid.kp=10.0;
+   yaw_outer_pid.kp=10;
    yaw_outer_pid.ki=0;
    yaw_outer_pid.kd=0;
    yaw_outer_pid.integral=0;
@@ -153,8 +153,8 @@ void gimbal_yaw_inner_pid_init()             //yaw轴内环PID初始化
    yaw_inner_pid.target=0.0;
    yaw_inner_pid.ActualSpeed=0.0;
 
-   yaw_inner_pid.kp=260.0;
-   yaw_inner_pid.ki=2.57;
+   yaw_inner_pid.kp=200.0;
+   yaw_inner_pid.ki=0.2;
    yaw_inner_pid.kd=0;
    yaw_inner_pid.integral=0;
 
@@ -173,7 +173,7 @@ void gimbal_pitch_outer_pid_init()             //pitch轴外环PID初始化
    pitch_outer_pid.target=0.0;
    pitch_outer_pid.ActualSpeed=0.0;
 
-   pitch_outer_pid.kp=18.4;
+   pitch_outer_pid.kp=10.6;
    pitch_outer_pid.ki=0;
    pitch_outer_pid.kd=0;
    pitch_outer_pid.integral=0;
@@ -189,8 +189,8 @@ void gimbal_pitch_inner_pid_init()             //pitch轴内环PID初始化
    pitch_inner_pid.target=0.0;
    pitch_inner_pid.ActualSpeed=0.0;
 
-   pitch_inner_pid.kp=130;
-   pitch_inner_pid.ki=1.2;
+   pitch_inner_pid.kp=150;
+   pitch_inner_pid.ki=1.4;
    pitch_inner_pid.kd=0;
    pitch_inner_pid.integral=0;
 
@@ -297,8 +297,8 @@ void Gimbal_PID()           //云台PID运算
 	}
 	else if(GYR_first>5) GYR_first=6;
 	
-   if(pitch_outer_pid.target>=24.0f+Degree_po) pitch_outer_pid.target=24.0f+Degree_po;         //俯仰角限幅
-   else if(pitch_outer_pid.target<=-18.0f+Degree_po) pitch_outer_pid.target=-18.0f+Degree_po;
+   if(pitch_outer_pid.target>=35.0f+Degree_po) pitch_outer_pid.target=35.0f+Degree_po;         //俯仰角限幅
+   else if(pitch_outer_pid.target<=-25.0f+Degree_po) pitch_outer_pid.target=-25.0f+Degree_po;
 
    //yaw轴的串级PID
 
@@ -373,7 +373,7 @@ void get_total_angle(struct dial_data *p)
 	p->last_angle = p->angle;
 }
 
-float dial_turns=1.5;
+float dial_turns=1.6;
 //确定拨盘目标圈数
 void get_moto_offset(struct dial_data *ptr)
 {
@@ -397,7 +397,6 @@ void get_back_offset(struct dial_data *ptr)
 int dial_mode=hero;
 extern int dial_sign;
 extern int dial_sign1;
-extern int dial_back_sign;
 extern int infra_red_GPIO;
 void dial_PID()             //拨盘PID运算
 {
@@ -428,11 +427,9 @@ void dial_PID()             //拨盘PID运算
 		{
          if(fabs(dial_outer_pid.ActualSpeed-dial_outer_pid.target)<15)     //确定结束后，运行结束程序
          {
-            dial_sign=0;
-            dial_back_sign=0;
-            dial_number=0;
+            dial_sign1=0;
             dial_number1=0;
-            dial_number2=0;
+            
 
 				dial_data.total_angle=0;
 				dial_data.angle_first=0;

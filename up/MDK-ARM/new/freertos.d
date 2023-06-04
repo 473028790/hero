@@ -67,3 +67,5 @@ new\freertos.o: ./user/Ranging.h
 new\freertos.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
 new\freertos.o: ../Middlewares/ST/ARM/DSP/Inc/arm_math.h
 new\freertos.o: ../Drivers/CMSIS/Include/core_cm4.h
+new\freertos.o: ./user/kalman.h
+new\freertos.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h

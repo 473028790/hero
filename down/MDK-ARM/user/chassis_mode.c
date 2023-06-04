@@ -1,6 +1,5 @@
 #include "chassis_mode.h"
 #include "FreeRTOS.h"
-#include "task.h"
 #include "main.h"
 #include "math.h"
 #include "can.h"
@@ -8,20 +7,24 @@
 #include "rc.h"
 extern KEY	KEY_Date;
 
-#define front_degree 7864.0f    //当yaw朝前的时候，yaw电机的ecd
+float front_degree=1335.0f;    //当yaw朝前的时候，yaw电机的ecd
+
+#define  front_degree1 1335.0f    //当yaw朝前的时候，yaw电机的ecd
+
 #define cheassis_follow_speed 600.00f
 
 int chassis_mode=cheassis_follow;
 int Q_sign=1;
 int E_sign=0;
-
-
+uint8_t R_sign=0;
+extern int16_t R_Y;
+extern int16_t R_X;
 
 void Function_Choose(void)
 {
 	if(STOP==1)
 	{
-		if(MODE==1 || MODE==3)  CtoG();   					//底盘跟随
+		if(MODE==1 || MODE==3)  CtoG(R_X,R_Y);   					//底盘跟随
 		else if(MODE==2)
 		{
 			Circle(R_X,R_Y);		//小陀螺
@@ -29,23 +32,38 @@ void Function_Choose(void)
 	}
 	if(STOP==2)
 	{
-		if(KEY_Date.Q==1 && KEY_Date.E==0)
+		if(KEY_Date.Q==1 && KEY_Date.E==0 && KEY_Date.R==0) 
 		{
 			E_sign=0;
 			Q_sign=1;
+			R_sign=0;
 		}
-		if(KEY_Date.E==1 && KEY_Date.Q==0)
+		if(KEY_Date.E==1 && KEY_Date.Q==0 && KEY_Date.R==0)
 		{
 			Q_sign=0;
 			E_sign=1;
+			R_sign=0;
 		}
-		if(Q_sign==1 &&E_sign==0)	
+		if(KEY_Date.E==0 && KEY_Date.Q==0 && KEY_Date.R==1)
+		{
+			Q_sign=0;
+			E_sign=0;
+			R_sign=1;
+		}
+		
+		if(Q_sign==1 &&E_sign==0 && R_sign==0)	
 		{
 			chassis_mode=cheassis_follow;
+			front_degree=1335.0f;
 		}
-		else if(E_sign==1 && Q_sign==0)
+		else if(E_sign==1 && Q_sign==0 && R_sign==0)
 		{
 			chassis_mode=Small_gyroscope;
+		}
+		if(Q_sign==0 &&E_sign==0 && R_sign==1)	
+		{
+			chassis_mode=cheassis_follow;
+			front_degree=2316.0f;
 		}
 
 		if(chassis_mode==Small_gyroscope)
@@ -54,7 +72,7 @@ void Function_Choose(void)
 		}	
 		else
 		{
-			CtoG();   							//底盘跟随
+			CtoG((KEY_Date.R_X),(KEY_Date.R_Y)); 							//底盘跟随
 		}
 	}
 }
@@ -68,31 +86,63 @@ float degree_ch;
 float hudu_ch;
 float Is_con;
 float ecd_diff;
+float cheassis_speed_ratio;
 int16_t Is_finishctog=1;
 
-void CtoG()
+void CtoG(int16_t right_X,int16_t right_Y)
 {
+	wheel_moter[0].target_speed=0.0f;
+	wheel_moter[1].target_speed=0.0f;
+	wheel_moter[2].target_speed=0.0f;
+	wheel_moter[3].target_speed=0.0f;
+	
+	
 	ecd_diff=front_degree-gimbal_yaw_motor.ecd;								//参考机械角度与实际角度的差值
  
 	if(ecd_diff>4095)    ecd_diff-=8192;     //边界处理
 	else if(ecd_diff<-4095)  	ecd_diff+=8192;
+	
+	cheassis_speed_ratio=(ecd_diff/cheassis_follow_speed);
+	if(cheassis_speed_ratio<=0.26f && cheassis_speed_ratio>=-0.26f) cheassis_speed_ratio=0;
+	if(cheassis_speed_ratio>3.0f) cheassis_speed_ratio=3.0f;
+	if(cheassis_speed_ratio<-3.0f) cheassis_speed_ratio=-3.0f;
+	wheel_moter[0].target_speed+=-(cheassis_speed_ratio*1200.0f);
+	wheel_moter[1].target_speed+=-(cheassis_speed_ratio*1200.0f);
+	wheel_moter[2].target_speed+=-(cheassis_speed_ratio*1200.0f);
+	wheel_moter[3].target_speed+=-(cheassis_speed_ratio*1200.0f);
+	
+		//底盘坐标系的速度
+		float V_x;
+		float V_y;
 
-	if(Is_finishctog==1)
-	{
-		if(ecd_diff>=50||ecd_diff<=-50)    Is_finishctog=0; //判断云台是否转动和底盘是否开始跟随
-	}
-	if(ecd_diff<=50&&ecd_diff>=-50) Is_finishctog=1;         //如果机械角度靠近开始跟随时的机械角度，则完成跟随
+		if(gimbal_yaw_motor.ecd<front_degree1)
+		{
+			ecd_ch=8191.0f+gimbal_yaw_motor.ecd-front_degree1;
+		}
+		else
+		{
+			ecd_ch=gimbal_yaw_motor.ecd-front_degree1;  //机械角度化角度，角度化弧度
+		}
 
-	if(Is_finishctog==0)      //底盘开始跟随，则进入调整
-	{
-		if(ecd_diff>=540) ecd_diff=540;         //跟随速度限幅
-		else if(ecd_diff <=-540) ecd_diff=-540;
+
+
+		degree_ch=ecd_ch*(360.0f / 8191.0f);   //机械角度化角度	
+		hudu=degree_ch*(3.14f / 180.0f);
 		
-		wheel_moter[0].target_speed+=-((ecd_diff/cheassis_follow_speed)*1800.0f);
-		wheel_moter[1].target_speed+=-((ecd_diff/cheassis_follow_speed)*1800.0f);
-		wheel_moter[2].target_speed+=-((ecd_diff/cheassis_follow_speed)*1800.0f);
-		wheel_moter[3].target_speed+=-((ecd_diff/cheassis_follow_speed)*1800.0f);
-	}
+		Xsin=right_X*sin(hudu);         //分解
+		Xcos=right_X*cos(hudu);
+		Ysin=right_Y*sin(hudu);
+		Ycos=right_Y*cos(hudu);
+
+		V_x=-(Xcos+Ysin);
+		V_y=-(-Xsin+Ycos);
+			
+	wheel_moter[0].target_speed+=(float)(V_x-V_y);
+	wheel_moter[1].target_speed+=(float)(V_x+V_y);
+	wheel_moter[2].target_speed+=(float)(-V_x+V_y);
+	wheel_moter[3].target_speed+=(float)(-V_x-V_y);
+	
+
 }
 /*************************************小陀螺**************************************/	
 int ciecle_speed=5200;
@@ -126,8 +176,8 @@ void Circle(int16_t right_X,int16_t right_Y)
 		wheel_moter[2].target_speed=ciecle_speed;
 		wheel_moter[3].target_speed=ciecle_speed;
 
-		V_x=Xcos+Ysin;
-		V_y=-Xsin+Ycos;
+		V_x=-(Xcos+Ysin);
+		V_y=-(-Xsin+Ycos);
 			
 	wheel_moter[0].target_speed+=(float)(V_x-V_y);
 	wheel_moter[1].target_speed+=(float)(V_x+V_y);

@@ -35,6 +35,7 @@
 #include "detect_task.h"
 #include "chassis_mode.h"
 #include "Ranging.h"
+#include "kalman.h"
 
 extern void Chassis_PID(void);
 extern void Gimbal_PID(void);
@@ -188,8 +189,7 @@ void Gimbal_Task(void const * argument)
   for(;;)
   {
 		cnt629++;
-		distance_test();
-		//distance_test();
+
 		ReadRc_Gimbal();
 		Gimbal_PID();
 		Friction_PID();
@@ -211,6 +211,8 @@ void Gimbal_Task(void const * argument)
 */
 extern KEY	KEY_Date;
 int chasses_pcb_rst=0;
+extern RC_Ctl_t RC_CtrlData;
+extern int FRI_slove_sign;
 /* USER CODE END Header_can_Task */
 void can_Task(void const * argument)
 {
@@ -246,6 +248,7 @@ extern uint8_t ranging_rc_buffer[8];
 uint32_t ranging_distance;
 double ranging_x;
 int L1_Distance;
+extern int dial_sign1;
 /* USER CODE END Header_vofa_Task */
 void vofa_Task(void const * argument)
 {
@@ -258,7 +261,7 @@ void vofa_Task(void const * argument)
   {
 		if(ranging_flag==1)
 		{
-			 if(ranging_rc_buffer[2]==4)
+			if(ranging_rc_buffer[2]==3 ||ranging_rc_buffer[2]==4)
 			{
 				for(int i=3;i<=6;i++)
 				{
@@ -270,7 +273,10 @@ void vofa_Task(void const * argument)
 		}
 		
 		cnt16++;
-		//report_SendData(RC_CtrlData.mouse.x,left_X,RC_CtrlData.mouse.x,left_Y,0);
+		CAN1_0x748_TX(RC_CtrlData.rc.s1,RC_CtrlData.rc.s2,RC_CtrlData.mouse.press_l,FRI_slove_sign,RC_CtrlData.rc.ch0,RC_CtrlData.rc.ch1);
+		CAN1_0x478_TX(0,RC_CtrlData.key.v,RC_CtrlData.mouse.x,RC_CtrlData.rc.ch2,RC_CtrlData.rc.ch3);
+
+		report_SendData(pitch_outer_pid.target,pitch_outer_pid.ActualSpeed,left_X,dial_motor.ActualSpeed,dial_motor.target_speed);
 		vTaskDelayUntil(&PreviousWakeTime1,TimeIncrement);
   }
   /* USER CODE END vofa_Task */

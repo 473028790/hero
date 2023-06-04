@@ -213,377 +213,372 @@
         <Ww>
           <count>11</count>
           <WinNumber>1</WinNumber>
-          <ItemText>Friction_motor</ItemText>
+          <ItemText>supercap</ItemText>
         </Ww>
         <Ww>
           <count>12</count>
           <WinNumber>1</WinNumber>
-          <ItemText>supercap</ItemText>
+          <ItemText>Vision_Data,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>13</count>
           <WinNumber>1</WinNumber>
-          <ItemText>dial_outer_pid</ItemText>
+          <ItemText>UART1_Rx_Buf,0x10</ItemText>
         </Ww>
         <Ww>
           <count>14</count>
           <WinNumber>1</WinNumber>
-          <ItemText>dial_inner_pid</ItemText>
+          <ItemText>data,0x10</ItemText>
         </Ww>
         <Ww>
           <count>15</count>
           <WinNumber>1</WinNumber>
-          <ItemText>cnt5,0x0A</ItemText>
+          <ItemText>\\new\user/vision.c\UART1_Rx_Buf</ItemText>
         </Ww>
         <Ww>
           <count>16</count>
           <WinNumber>1</WinNumber>
-          <ItemText>friction_sign,0x0A</ItemText>
+          <ItemText>vision_data_Receive</ItemText>
         </Ww>
         <Ww>
           <count>17</count>
           <WinNumber>1</WinNumber>
-          <ItemText>My_status,0x0A</ItemText>
+          <ItemText>dial_outer_pid</ItemText>
         </Ww>
         <Ww>
           <count>18</count>
           <WinNumber>1</WinNumber>
-          <ItemText>dial_Fallback_sign,0x0A</ItemText>
+          <ItemText>cnt25,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>19</count>
           <WinNumber>1</WinNumber>
-          <ItemText>dial_number1</ItemText>
+          <ItemText>\\new\../Core/Src/can.c\wheel_moter</ItemText>
         </Ww>
         <Ww>
           <count>20</count>
           <WinNumber>1</WinNumber>
-          <ItemText>cnt30,0x0A</ItemText>
+          <ItemText>\\new\../Core/Src/can.c\wheel_moter</ItemText>
         </Ww>
         <Ww>
           <count>21</count>
           <WinNumber>1</WinNumber>
-          <ItemText>cnt31</ItemText>
+          <ItemText>CAN2_Rx,0x10</ItemText>
         </Ww>
         <Ww>
           <count>22</count>
           <WinNumber>1</WinNumber>
-          <ItemText>cnt32,0x0A</ItemText>
+          <ItemText>last_store</ItemText>
         </Ww>
         <Ww>
           <count>23</count>
           <WinNumber>1</WinNumber>
-          <ItemText>motor_chassis</ItemText>
+          <ItemText>store,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>24</count>
           <WinNumber>1</WinNumber>
-          <ItemText>MPU_data,0x0A</ItemText>
+          <ItemText>cnt26,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>25</count>
           <WinNumber>1</WinNumber>
-          <ItemText>cnt10,0x0A</ItemText>
+          <ItemText>inaf,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>26</count>
           <WinNumber>1</WinNumber>
-          <ItemText>cnt19,0x0A</ItemText>
+          <ItemText>cnt111,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>27</count>
           <WinNumber>1</WinNumber>
-          <ItemText>Vision_Data,0x0A</ItemText>
+          <ItemText>\\new\../Core/Src/can.c\gimbal_yaw_motor</ItemText>
         </Ww>
         <Ww>
           <count>28</count>
           <WinNumber>1</WinNumber>
-          <ItemText>UART1_Rx_Buf,0x10</ItemText>
+          <ItemText>cnt100</ItemText>
         </Ww>
         <Ww>
           <count>29</count>
           <WinNumber>1</WinNumber>
-          <ItemText>data,0x10</ItemText>
+          <ItemText>RC_data</ItemText>
         </Ww>
         <Ww>
           <count>30</count>
           <WinNumber>1</WinNumber>
-          <ItemText>\\new\user/vision.c\UART1_Rx_Buf</ItemText>
+          <ItemText>CAN2_Rx</ItemText>
         </Ww>
         <Ww>
           <count>31</count>
           <WinNumber>1</WinNumber>
-          <ItemText>vision_data_Receive</ItemText>
+          <ItemText>CAN2_Rx</ItemText>
         </Ww>
         <Ww>
           <count>32</count>
           <WinNumber>1</WinNumber>
-          <ItemText>dial_outer_pid</ItemText>
+          <ItemText>\\new\../Core/Src/can.c\dial_data</ItemText>
         </Ww>
         <Ww>
           <count>33</count>
           <WinNumber>1</WinNumber>
-          <ItemText>cnt25,0x0A</ItemText>
+          <ItemText>My_status,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>34</count>
           <WinNumber>1</WinNumber>
-          <ItemText>\\new\../Core/Src/can.c\wheel_moter</ItemText>
+          <ItemText>ShowData,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>35</count>
           <WinNumber>1</WinNumber>
-          <ItemText>\\new\../Core/Src/can.c\wheel_moter</ItemText>
+          <ItemText>cnt1212,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>36</count>
           <WinNumber>1</WinNumber>
-          <ItemText>\\new\../Core/Src/can.c\cnt50,0x0A</ItemText>
+          <ItemText>cap_now,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>37</count>
           <WinNumber>1</WinNumber>
-          <ItemText>CAN2_Rx,0x10</ItemText>
+          <ItemText>CAN1_RX</ItemText>
         </Ww>
         <Ww>
           <count>38</count>
           <WinNumber>1</WinNumber>
-          <ItemText>last_store</ItemText>
+          <ItemText>My_status,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>39</count>
           <WinNumber>1</WinNumber>
-          <ItemText>store,0x0A</ItemText>
+          <ItemText>cnt651,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>40</count>
           <WinNumber>1</WinNumber>
-          <ItemText>cnt50,0x0A</ItemText>
+          <ItemText>judge_infop,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>41</count>
           <WinNumber>1</WinNumber>
-          <ItemText>cnt26,0x0A</ItemText>
+          <ItemText>cnt199,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>42</count>
           <WinNumber>1</WinNumber>
-          <ItemText>infra_red_GPIO,0x0A</ItemText>
+          <ItemText>supercap</ItemText>
         </Ww>
         <Ww>
           <count>43</count>
           <WinNumber>1</WinNumber>
-          <ItemText>inaf,0x0A</ItemText>
+          <ItemText>super_cap1,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>44</count>
           <WinNumber>1</WinNumber>
-          <ItemText>cnt111,0x0A</ItemText>
+          <ItemText>cnt199,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>45</count>
           <WinNumber>1</WinNumber>
-          <ItemText>\\new\../Core/Src/can.c\gimbal_yaw_motor</ItemText>
+          <ItemText>ui_x_st,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>46</count>
           <WinNumber>1</WinNumber>
-          <ItemText>chassis_cnt,0x0A</ItemText>
+          <ItemText>ui_y_st,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>47</count>
           <WinNumber>1</WinNumber>
-          <ItemText>cnt100</ItemText>
+          <ItemText>ui_x_end,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>48</count>
           <WinNumber>1</WinNumber>
-          <ItemText>dial_red,0x0A</ItemText>
+          <ItemText>ui_y_end,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>49</count>
           <WinNumber>1</WinNumber>
-          <ItemText>MODE,0x0A</ItemText>
+          <ItemText>super_per,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>50</count>
           <WinNumber>1</WinNumber>
-          <ItemText>RC_data</ItemText>
+          <ItemText>cnt215,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>51</count>
           <WinNumber>1</WinNumber>
-          <ItemText>CAN2_Rx</ItemText>
+          <ItemText>STOP</ItemText>
         </Ww>
         <Ww>
           <count>52</count>
           <WinNumber>1</WinNumber>
-          <ItemText>CAN2_Rx</ItemText>
+          <ItemText>cnt225,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>53</count>
           <WinNumber>1</WinNumber>
-          <ItemText>\\new\../Core/Src/can.c\dial_data</ItemText>
+          <ItemText>chassis_referee_mode,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>54</count>
           <WinNumber>1</WinNumber>
-          <ItemText>cnt500,0x0A</ItemText>
+          <ItemText>shoot_referee_mode,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>55</count>
           <WinNumber>1</WinNumber>
-          <ItemText>My_status,0x0A</ItemText>
+          <ItemText>ciecle_speed,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>56</count>
           <WinNumber>1</WinNumber>
-          <ItemText>ShowData,0x0A</ItemText>
+          <ItemText>hero_shoot_number,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>57</count>
           <WinNumber>1</WinNumber>
-          <ItemText>cnt1212,0x0A</ItemText>
+          <ItemText>cnt315,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>58</count>
           <WinNumber>1</WinNumber>
-          <ItemText>cap_now,0x0A</ItemText>
+          <ItemText>shoot_number_char,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>59</count>
           <WinNumber>1</WinNumber>
-          <ItemText>CAN1_RX</ItemText>
+          <ItemText>cnt66,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>60</count>
           <WinNumber>1</WinNumber>
-          <ItemText>ecd_diff</ItemText>
+          <ItemText>cnt50</ItemText>
         </Ww>
         <Ww>
           <count>61</count>
           <WinNumber>1</WinNumber>
-          <ItemText>cnt19,0x0A</ItemText>
+          <ItemText>cnt50,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>62</count>
           <WinNumber>1</WinNumber>
-          <ItemText>My_status,0x0A</ItemText>
+          <ItemText>cnt26</ItemText>
         </Ww>
         <Ww>
           <count>63</count>
           <WinNumber>1</WinNumber>
-          <ItemText>cnt651,0x0A</ItemText>
+          <ItemText>ciecle_speed,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>64</count>
           <WinNumber>1</WinNumber>
-          <ItemText>cnt66,0x0A</ItemText>
+          <ItemText>Chassis_speed_proportion,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>65</count>
           <WinNumber>1</WinNumber>
-          <ItemText>judge_infop,0x0A</ItemText>
+          <ItemText>cheassis_speed_ratio</ItemText>
         </Ww>
         <Ww>
           <count>66</count>
           <WinNumber>1</WinNumber>
-          <ItemText>cnt199</ItemText>
+          <ItemText>cnt2622,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>67</count>
           <WinNumber>1</WinNumber>
-          <ItemText>supercap</ItemText>
+          <ItemText>ranging_distance,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>68</count>
           <WinNumber>1</WinNumber>
-          <ItemText>super_cap1,0x0A</ItemText>
+          <ItemText>ranging_distance_char2,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>69</count>
           <WinNumber>1</WinNumber>
-          <ItemText>cnt199</ItemText>
+          <ItemText>hudu</ItemText>
         </Ww>
         <Ww>
           <count>70</count>
           <WinNumber>1</WinNumber>
-          <ItemText>ui_x_st,0x0A</ItemText>
+          <ItemText>V_y</ItemText>
         </Ww>
         <Ww>
           <count>71</count>
           <WinNumber>1</WinNumber>
-          <ItemText>ui_y_st,0x0A</ItemText>
+          <ItemText>Xsin</ItemText>
         </Ww>
         <Ww>
           <count>72</count>
           <WinNumber>1</WinNumber>
-          <ItemText>ui_x_end,0x0A</ItemText>
+          <ItemText>Ysin</ItemText>
         </Ww>
         <Ww>
           <count>73</count>
           <WinNumber>1</WinNumber>
-          <ItemText>ui_y_end,0x0A</ItemText>
+          <ItemText>V_x</ItemText>
         </Ww>
         <Ww>
           <count>74</count>
           <WinNumber>1</WinNumber>
-          <ItemText>super_per,0x0A</ItemText>
+          <ItemText>V_y</ItemText>
         </Ww>
         <Ww>
           <count>75</count>
           <WinNumber>1</WinNumber>
-          <ItemText>cnt215,0x0A</ItemText>
+          <ItemText>R_Y,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>76</count>
           <WinNumber>1</WinNumber>
-          <ItemText>STOP</ItemText>
+          <ItemText>R_X,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>77</count>
           <WinNumber>1</WinNumber>
-          <ItemText>cnt225,0x0A</ItemText>
+          <ItemText>KEY_Date,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>78</count>
           <WinNumber>1</WinNumber>
-          <ItemText>chassis_referee_mode,0x0A</ItemText>
+          <ItemText>cnt50</ItemText>
         </Ww>
         <Ww>
           <count>79</count>
           <WinNumber>1</WinNumber>
-          <ItemText>shoot_referee_mode,0x0A</ItemText>
+          <ItemText>RC_CtrlData</ItemText>
         </Ww>
         <Ww>
           <count>80</count>
           <WinNumber>1</WinNumber>
-          <ItemText>ciecle_speed,0x0A</ItemText>
+          <ItemText>front_degree</ItemText>
         </Ww>
         <Ww>
           <count>81</count>
           <WinNumber>1</WinNumber>
-          <ItemText>hero_shoot_number,0x0A</ItemText>
+          <ItemText>Q_sign,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>82</count>
           <WinNumber>1</WinNumber>
-          <ItemText>cnt315,0x0A</ItemText>
+          <ItemText>E_sign,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>83</count>
           <WinNumber>1</WinNumber>
-          <ItemText>shoot_number_char,0x0A</ItemText>
+          <ItemText>R_sign,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>84</count>
           <WinNumber>1</WinNumber>
-          <ItemText>cnt66,0x0A</ItemText>
-        </Ww>
-        <Ww>
-          <count>85</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>cnt50</ItemText>
+          <ItemText>RC_CtrlData</ItemText>
         </Ww>
       </WatchWindow1>
       <Tracepoint>

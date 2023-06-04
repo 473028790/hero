@@ -399,11 +399,6 @@
               <FilePath>.\user\imu_data_decode.c</FilePath>
             </File>
             <File>
-              <FileName>packet.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\user\packet.c</FilePath>
-            </File>
-            <File>
               <FileName>pid.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\user\pid.c</FilePath>
@@ -452,6 +447,11 @@
               <FileName>Ranging.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\user\Ranging.c</FilePath>
+            </File>
+            <File>
+              <FileName>packet.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\user\packet.c</FilePath>
             </File>
           </Files>
         </Group>

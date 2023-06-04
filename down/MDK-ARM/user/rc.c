@@ -46,6 +46,8 @@ int16_t R_X;
 #define KEY_PRESSED_OFFSET_E ((uint16_t)0x01<<5)
 #define KEY_PRESSED_OFFSET_SHIFT ((uint16_t)0x01<<6)
 #define KEY_PRESSED_OFFSET_CTRL ((uint16_t)0x01<<7)
+
+
 #define RC_FRAME_LENGTH 18u  
 
 //??????
@@ -178,7 +180,7 @@ void RemoteDataProcess(uint8_t *pData)
 	RC_CtrlData.mouse.z = ((int16_t)pData[10]) | ((int16_t)pData[11] << 8); 
 	RC_CtrlData.mouse.press_l = pData[12];
 	RC_CtrlData.mouse.press_r = pData[13];
-	RC_CtrlData.key.v = ((int16_t)pData[14]);// | ((int16_t)pData[15] << 8);
+	RC_CtrlData.key.v = ((int16_t)pData[14]) | ((int16_t)pData[15] << 8);
 	//your control code ….
 
 	STOP=RC_CtrlData.rc.s1;
@@ -201,7 +203,10 @@ void RemoteDataProcess(uint8_t *pData)
 	KEY_Date.Q=((RC_CtrlData.key.v)<<9);	
 	KEY_Date.Q=((KEY_Date.Q)>>15);
 	//E			???
-	KEY_Date.E=((RC_CtrlData.key.v)>>7);
+	KEY_Date.E=((RC_CtrlData.key.v)<<8);	
+	KEY_Date.E=((KEY_Date.E)>>15);
+	//R			????
+
 
 
 	//??????		
@@ -220,7 +225,7 @@ void RC_restart(uint16_t dma_buf_num)
 	NVIC_SystemReset();
 	*/
 }
-int Chassis_speed_proportion=4000; //右边控制底盘最大速度的比例
+int Chassis_speed_proportion=3000; //右边控制底盘最大速度的比例
 int chassis_cnt=0;
 void ReadRc_Chassis(void)
 {
@@ -374,26 +379,26 @@ void ReadRc_Chassis(void)
 		}
 		if(MODE==1)
 		{
-			wheel_moter[0].target_speed=(float)1500;
-			wheel_moter[1].target_speed=(float)1500;
-			wheel_moter[2].target_speed=(float)1500;
-			wheel_moter[3].target_speed=(float)1500;
+			wheel_moter[0].target_speed=(float)3500;
+			wheel_moter[1].target_speed=(float)3500;
+			wheel_moter[2].target_speed=(float)3500;
+			wheel_moter[3].target_speed=(float)3500;
 		}
 		if(MODE==2)
 		{
-			wheel_moter[0].target_speed=(float)-1500;
-			wheel_moter[1].target_speed=(float)-1500;
-			wheel_moter[2].target_speed=(float)-1500;
-			wheel_moter[3].target_speed=(float)-1500;
+			wheel_moter[0].target_speed=(float)-3500;
+			wheel_moter[1].target_speed=(float)-3500;
+			wheel_moter[2].target_speed=(float)-3500;
+			wheel_moter[3].target_speed=(float)-3500;
 		}
 		*/
 		
 		if(MODE!=2)
 		{
-			wheel_moter[0].target_speed=(float)(right_X-right_Y);
-			wheel_moter[1].target_speed=(float)(+right_X+right_Y);
-			wheel_moter[2].target_speed=(float)(-right_X+right_Y);
-			wheel_moter[3].target_speed=(float)(-right_X-right_Y);
+			wheel_moter[0].target_speed=(float)(-right_X+right_Y);
+			wheel_moter[1].target_speed=(float)(-right_X-right_Y);
+			wheel_moter[2].target_speed=(float)(right_X-right_Y);
+			wheel_moter[3].target_speed=(float)(right_X+right_Y);
 		}
 		
 	}
@@ -403,10 +408,10 @@ void ReadRc_Chassis(void)
 		right_X=KEY_Date.R_X;
 		right_Y=KEY_Date.R_Y;
 
-			wheel_moter[0].target_speed=(float)(right_X-right_Y);
-			wheel_moter[1].target_speed=(float)(+right_X+right_Y);
-			wheel_moter[2].target_speed=(float)(-right_X+right_Y);
-			wheel_moter[3].target_speed=(float)(-right_X-right_Y);
+			wheel_moter[0].target_speed=(float)(-right_X+right_Y);
+			wheel_moter[1].target_speed=(float)(-right_X-right_Y);
+			wheel_moter[2].target_speed=(float)(right_X-right_Y);
+			wheel_moter[3].target_speed=(float)(right_X+right_Y);
 
 	}	
 
@@ -466,174 +471,6 @@ void ReadRc_Gimbal(void)
 		else if (yaw_outer_pid.target<-179.9f)  yaw_outer_pid.target+=360.0f;	
 
 	}
-}
-int dial_number=0;
-int dial_number1=0;
-int dial_number2=0;
-int dial_sign=0;
-int dial_back_sign=0;
-int shoot_number=0;
-int infra_red_GPIO=3;
-int infra_red_MODE=0;
-int dial_red=0;
-void ReadRc_dial(void)
-{
-	//infra_red_GPIO=HAL_GPIO_ReadPin(GPIOC,GPIO_PIN_7);
-	dial_mode=dial_mode_choose;//??????
-
-/*
-	if(dial_mode==hero)
-	{
-		if(STOP==1)
-		{
-			
-			if(MODE==1)
-			{
-				dial_number++;
-				if(dial_number==1)
-				{
-					get_moto_offset(&dial_data);
-				}
-				if(dial_number>3) dial_number=3;
-			}
-
-			get_total_angle(&dial_data);
-
-			if(MODE==3)
-			{
-				//dial_finish();
-				dial_number=0;
-				dial_data.total_angle=0;
-				dial_data.angle_first=0;
-				dial_data.angle_set=0;
-			}
-			
-			
-
-
-
-		}
-		
-
-		if(STOP==2)
-		{
-			shoot_number=determine_shoot();
-			//if(RC_CtrlData.mouse.press_l==1 && shoot_number!=0)
-			
-			if(RC_CtrlData.mouse.press_l==1)
-			{
-				dial_sign=1;
-			}
-			if(dial_sign==1)
-			{
-				dial_number1++;
-				if(dial_number1==1)
-				{
-					get_moto_offset(&dial_data);
-				}
-				if(dial_number1>3) dial_number1=3;
-
-				get_total_angle(&dial_data);
-
-			}
-
-
-
-
-
-			if(RC_CtrlData.mouse.press_r==1)
-			{
-				dial_back_sign=1;
-			}
-			if(dial_back_sign==1)
-			{
-				dial_number2++;
-				if(dial_number2==1)
-				{
-					get_back_offset(&dial_data);
-				}
-				if(dial_number2>3) dial_number2=3;
-
-				get_total_angle(&dial_data);
-
-			}
-
-
-		}
-*/
-	if(dial_mode==infantry)
-	{
-      if(MODE==1)
-			{
-				dial_red++;
-				if(dial_red==1)
-				{
-					infra_red_MODE=1;
-				}
-				if(infra_red_MODE==1)
-				{
-					if(infra_red_GPIO==0)
-					{
-						dial_motor.target_speed=2000;
-						if(infra_red_GPIO==1)
-						{
-							dial_motor.target_speed=0;
-							infra_red_MODE=2;
-						}
-					}
-					else if(infra_red_GPIO==1)
-					{
-						dial_motor.target_speed=0;
-						infra_red_MODE=2;
-					}
-				}
-				
-				if(infra_red_MODE==2)
-				{
-					if(infra_red_GPIO==1)
-					{
-						dial_motor.target_speed=2000;
-					}
-					else if(infra_red_GPIO==0)
-					{
-						dial_motor.target_speed=0;
-						infra_red_MODE=0;
-					}
-				}
-			}
-			
-			if(MODE==3)
-			{
-				dial_red=0;
-				dial_motor.target_speed=0;
-				infra_red_MODE=0;
-			}
-		/*
-      if(MODE==1)
-      { 
-				if(infra_red_GPIO==1)
-				{
-					dial_motor.target_speed=2000;
-				}
-				if(infra_red_GPIO==0)
-				{
-					dial_motor.target_speed=0;
-				}
-      }
-	  if(MODE==3)
-      {
-				if(infra_red_GPIO==0)
-				{
-					dial_motor.target_speed=2000;
-				}
-				if(infra_red_GPIO==1)
-				{
-					dial_motor.target_speed=0;
-				}
-      }
-			*/
-	}
-
 }
 void KEY_chassis_max()
 {

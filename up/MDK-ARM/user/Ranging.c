@@ -74,15 +74,14 @@ void f_fastConti_Cmd(void)
 
 
 
-
 #include <stdio.h>
 #include <stdint.h>
 #include <math.h>
 
-float getTheta(int num,ranging_distance_t *ranging_distance);
+double getTheta(int num,ranging_distance_t *ranging_distance);
 
-float final_theta;
-float distance_x=2.891;
+double final_theta;
+double distance_x;
 void distance_test()
 {
     ranging_distance_t ranging_distance;
@@ -91,24 +90,24 @@ void distance_test()
     ranging_distance.M=	0.041;
     ranging_distance.V=15.5;
     ranging_distance.X=distance_x;
-    ranging_distance.Y=0.15;
+    ranging_distance.Y=0.2;
 
     final_theta=getTheta(10,&ranging_distance);
 }
-float getTheta(int num,ranging_distance_t *ranging_distance) {
-    float theta1 = -0.5235987755982f;
-    float theta2 = 1.57079632679489f;
-    float theta_mid;
-    float final_theta;
-    float y1 = 0;
-    float y2 = 0;
+double getTheta(int num,ranging_distance_t *ranging_distance) {
+    double theta1 = -0.5235987755982f;
+    double theta2 = 1.57079632679489f;
+    double theta_mid;
+    double final_theta;
+    double y1 = 0;
+    double y2 = 0;
     int i=0;
     for(i=0; i<num;i++){
         theta_mid = (theta1 + theta2) / 2.0f;
         y1 = (ranging_distance->M*ranging_distance->G/ranging_distance->K) * ranging_distance->X/(ranging_distance->V* cos(theta1)) + sin(theta1)/ cos(theta1)*ranging_distance->X + ranging_distance->M*ranging_distance->M*ranging_distance->G/(ranging_distance->K * ranging_distance->K) * log(1 - ranging_distance->K*ranging_distance->X/(ranging_distance->M*ranging_distance->V* cos(theta1))) - ranging_distance->Y;
         y2 = (ranging_distance->M*ranging_distance->G/ranging_distance->K) * ranging_distance->X/(ranging_distance->V* cos(theta_mid)) + sin(theta_mid)/ cos(theta_mid)*ranging_distance->X + ranging_distance->M*ranging_distance->M*ranging_distance->G/(ranging_distance->K * ranging_distance->K) * log(1 - ranging_distance->K*ranging_distance->X/(ranging_distance->M*ranging_distance->V* cos(theta_mid))) - ranging_distance->Y;
 
-        float test =  ranging_distance->K*ranging_distance->X/(ranging_distance->M*ranging_distance->V* cos(theta1));
+        double test =  ranging_distance->K*ranging_distance->X/(ranging_distance->M*ranging_distance->V* cos(theta1));
         if((y1 * y2) == 0)
         {
             if(y1 == 0)

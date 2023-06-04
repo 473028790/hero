@@ -45,3 +45,7 @@ new\rc.o: ../Core/Inc/tim.h
 new\rc.o: user\kalman.h
 new\rc.o: user\referee.h
 new\rc.o: user\crc.h
+new\rc.o: user\Ranging.h
+new\rc.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
+new\rc.o: ../Middlewares/ST/ARM/DSP/Inc/arm_math.h
+new\rc.o: ../Drivers/CMSIS/Include/core_cm4.h

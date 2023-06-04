@@ -8,7 +8,7 @@
 
 
 void Function_Choose(void);
-void CtoG(void);
+void CtoG(int16_t right_X,int16_t right_Y);
 void Circle(int16_t right_Y,int16_t right_X);
 void separate(int16_t right_X,int16_t right_Y);
 

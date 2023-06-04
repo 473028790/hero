@@ -56,6 +56,8 @@ typedef  struct
 	uint16_t A;
 	uint16_t S;
 	uint16_t D;
+	uint16_t V;
+	uint16_t R;
 	uint16_t Shift;
 	uint16_t Ctrl;
 
